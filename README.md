@@ -21,8 +21,7 @@ Additional features that may be implemented after the core functionality is comp
 ## User Stories
 
 As a typical user, I want to be able to:
-- add a new contact to whom I owe money
-- add a new contact who owes me money
+- add a new contact to whom I owe money or who owes me money
 - add a new loan to an existing contact, and include details such as the date and amount owed
 - add a payment when part or all of a loan has been paid
 - edit the details of a loan at any time
