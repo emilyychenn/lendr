@@ -3,17 +3,17 @@ package model;
 import java.time.LocalDate;
 
 public class Loan {
-    private LocalDate dateOwed;
-    private LocalDate dateDue;
-    private Double totalAmount; // TODO: change to currency later!
-    private Currency amountRemaining;
-    private Currency amountPaid;
+    private String dateOwed; // TODO: change to LocalDate type
+//    private LocalDate dateDue; // optional field for later
+    private double totalAmount; // TODO: change to currency later!
+    private double amountRemaining;
+    private double amountPaid;
 
     // EFFECTS: constructs a loan given amount owed and date owed; date due is set later
-    public Loan(Double amountOwed, LocalDate dateOwed) {
+    public Loan(Double amountOwed, String dateOwed) {
         this.totalAmount = amountOwed;
         this.dateOwed = dateOwed;
-        this.dateDue = null;
+//        this.dateDue = null; // to be implemented later as another feature
     }
 
 

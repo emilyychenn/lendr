@@ -2,13 +2,13 @@ package model;
 
 import java.time.LocalDate;
 
-public class Transaction {
-    private LocalDate transactionDate;
+public class Payment {
+    private LocalDate paymentDate;
     private Contact contact;
     private Double amount;
 
-    public Transaction(User contact, Double amount) {
-        this.transactionDate = LocalDate.now();
+    public Payment(User contact, Double amount) {
+        this.paymentDate = LocalDate.now(); // default payment date is today's date
         this.contact = contact;
         this.amount = amount; // +'ve amount is payed to me, -'ve payed to contact
     }

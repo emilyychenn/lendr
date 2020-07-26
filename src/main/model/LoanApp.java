@@ -2,6 +2,7 @@ package model;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
@@ -31,7 +32,9 @@ public class LoanApp {
 
         System.out.println("Enter your name: ");
         user = input.next();
+        init(user);
         loadAccounts(user); // TODO!!
+        System.out.println("Hello, " + user + ".");
 
         while (keepGoing) {
             displayMenu();
@@ -66,8 +69,6 @@ public class LoanApp {
     private void init(String name) {
         newAccount = new Account(name);
         contactList = new ContactList();
-        Contact newContact = new Contact("sample contact", 1234567890);
-        contactList.addContactToList(newContact);
     }
 
     // TODO: EDIT THIS MENU TO REFLECT APPROPRIATE OPTIONS
@@ -80,7 +81,6 @@ public class LoanApp {
 //        System.out.println("\te -> edit loan details");
 //        System.out.println("\ts -> save transaction history to file");
         System.out.println("\tv -> view contact list");
-        System.out.println("\tl -> view list of loans");
         System.out.println("\tq -> quit");
     }
 
@@ -93,13 +93,12 @@ public class LoanApp {
         } else if (command.equals("c")) {
             System.out.println("Contact's name: ");
             String contactName = input.next();
-            System.out.println("Contact's phone number: ");
-            long phoneNum = input.nextLong(); //test for special characters, too many digits, etc
+            System.out.println("Contact's phone number, entered as XXX-XXX-XXXX: ");
+            String phoneNum = input.next(); //test for special characters, too many digits, etc
 
             Contact newContact = new Contact(contactName, phoneNum);
-            System.out.println(newContact.getName());
-            System.out.println(newContact.getPhoneNum());
-            contactList.addContactToList(newContact); // TODO: FIX
+            contactList.addContactToList(newContact);
+            System.out.println("Contact " + contactName + " added to contact list.");
         } else if (command.equals("p")) {
 //            addPayment(); // TODO!!
         } else if (command.equals("e")) {
@@ -108,8 +107,6 @@ public class LoanApp {
 //            saveTransactionHistory();    // TODO!!
         } else if (command.equals("v")) {
             viewContactList();
-        } else if (command.equals("l")) {
-//            viewListOfLoans();    // TODO!!
         } else {
             System.out.println("Selection not valid...");
         }
@@ -119,39 +116,80 @@ public class LoanApp {
     // MODIFIES: this
     // EFFECTS: conducts a deposit transaction
     private void addLoan() {
-        System.out.print("Enter loan amount: $");
-        double amount = input.nextDouble();
+        System.out.print("Contact List: ");
+        System.out.println(viewContactNames());
+        if (viewContactNames() == "No contacts to show.") {
+            System.out.println("You must create a contact before adding a loan.");
+        } else {
+            System.out.println("Enter a contact from list above (name is not case sensitive): ");
+            String contactName = input.next();
 
-        System.out.println("Enter contact name: ");
-        String contactName = input.next();
+            System.out.print("Enter loan amount (positive for amount they owe you, negative for amount you owe them): $");
+            double amount = input.nextDouble();
 
-//        Contact selectContact = getContactByName(contactName); // TODO: method exists in contactlist, should it be moved?
-
-        while (amount == 0) {
-            if (amount < 0) {
-//                System.out.println("You owe " + amount + " to" + selectContact.getName());
-            } else if (amount > 0) {
-//                System.out.println(selectContact.getName() + " owes you " + amount);
-            } else {
-                System.out.println("Please enter a non-zero amount. You cannot create a $0 loan:");
-                amount = input.nextDouble();
+            System.out.println("Enter date of loan (MM/DD/YY), or 't' for today's date: ");
+            String date = input.next();
+            if (date == "t") {
+                date = LocalDate.now().toString();
+            } else if (! date.matches("\\(0?[1-9]|1[012])-\\(0?[1-9]|[12][0-9]|3[01])-\\d{2}")) {
+                System.out.println("Invalid date. Please enter date in format MM/DD/YY.");
             }
+
+            Contact selectedContact = contactList.getContactByName(contactName);
+            if (selectedContact == null) {
+                System.out.println(contactName + " doesn't exist in your contact list. Select a contact from "
+                        + "your existing contacts or create a new contact.");
+            }
+            Loan newLoan = new Loan(amount, date);
+            selectedContact.setTotalAmountOwed(amount);
+
+            printBalance(selectedContact);
         }
+    }
 
-//        selectContact.deposit(amount);
+    public void printBalance(Contact contact) {
+        double amountOwed = contact.getTotalAmountOwed();
 
-//        printBalance(selectContact);
+        if (amountOwed < 0) {
+            System.out.println("You owe " + amountOwed + " to " + contact.getName());
+        } else if (amountOwed > 0) {
+            System.out.println(contact.getName() + " owes you " + amountOwed);
+        } else {
+            System.out.println("Congratulations! You owe each other nothing.");
+        }
     }
 
 
     public void viewContactList() {
-        for (int i = 0; i < contactList.getNumContacts(); i++) {
-            Contact contact = contactList.getContactFromIndex(i);
-            String contactName = contact.getName();
-            long phoneNum = contact.getPhoneNum();
-            double amountOwed = contact.getTotalAmountOwed();
-            System.out.println(contactName + ": " + amountOwed + " (" + phoneNum + ")");
+        if (contactList.getNumContacts() == 0) {
+            System.out.println("No contacts to show.");
+        } else {
+            for (int i = 0; i < contactList.getNumContacts(); i++) {
+                Contact contact = contactList.getContactFromIndex(i);
+                String contactName = contact.getName();
+                String phoneNum = contact.getPhoneNum();
+                double amountOwed = contact.getTotalAmountOwed();
+                System.out.println(contactName + ": $ " + amountOwed + " owed, phone #: (" + phoneNum + ")");
+            }
         }
+    }
+
+    public String viewContactNames() {
+        String contactNames = "";
+        if (contactList.getNumContacts() == 0) {
+            return "No contacts to show.";
+        } else {
+            for (int i = 0; i < contactList.getNumContacts(); i++) {
+                Contact contact = contactList.getContactFromIndex(i);
+                String contactName = contact.getName();
+                contactNames = contactNames + "\n" + contactName;
+            }
+            return contactNames;
+        }
+    }
+
+    public void addPayment() {
+
     }
 
 }

@@ -12,7 +12,7 @@ public class ContactList {
 
     public Contact getContactByName(String name) {
         for (Contact c : contactList) {
-            if (c.getName() == name) {
+            if (c.getName().equalsIgnoreCase(name)) {
                 return c;
             }
         }

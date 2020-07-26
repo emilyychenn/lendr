@@ -12,7 +12,7 @@ This program would ideally be used by individuals or groups of friends/colleague
 - a report/summary to view your history: displaying money in and out over different periods of time
 
 Additional features that may be implemented after the core functionality is complete could include:
-- the ability to include a file or an image of a receipt from the transaction
+- the ability to include a file or an image of a receipt from the payment
 - a currency converter to support different currencies
 - the option to add interest to loans (for individuals with larger debts to banks etc.)
 - a button that allows users to quickly mark a debt as paid instead of manually entering the amount
@@ -27,7 +27,7 @@ As a typical user, I want to be able to:
 - edit the details of a loan at any time
 - view a list of the people who I owe money to and who owe money to me
 - view the total balance to see my overall owed/owing balance
-- select any contact and view the transaction history
+- select any contact and view the payment history
 
 As a user with significant debt (e.g. mortgages, car payments, bank loans, lines of credit), I want to be able to:
 - view payment deadlines with interest added over time
