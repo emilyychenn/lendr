@@ -11,8 +11,9 @@ public class Payment {
     private Contact contact;
     private Double amount;
 
+    // EFFECTS: constructs a new payment and sets the payment date to today's date as a default
     public Payment(Contact contact, Double amount) {
-        this.paymentDate = LocalDate.now(); // default payment date is today's date
+        this.paymentDate = LocalDate.now();
         this.contact = contact;
         this.amount = amount; // +'ve amount is payed to me, -'ve payed to contact
     }

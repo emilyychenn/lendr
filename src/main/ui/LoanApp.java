@@ -75,7 +75,7 @@ public class LoanApp {
     // EFFECTS: processes user command
     private void processCommand(String command) {
         if (command.equals("a")) {
-            addLoan();
+            addNewLoanDetails();
         } else if (command.equals("c")) {
             createContact();
         } else if (command.equals("p")) {
@@ -90,7 +90,8 @@ public class LoanApp {
 
     // MODIFIES: this
     // EFFECTS: conducts a new loan transaction
-    private void addLoan() {
+    // TODO: change this to addNewLoanDetails() and extrapolate addLoan()
+    private void addNewLoanDetails() {
         System.out.print("Contact List: " + viewContactNames());
         if (viewContactNames() == "No contacts to show.") {
             System.out.println("\nYou must create a contact before adding a loan.");
@@ -105,7 +106,7 @@ public class LoanApp {
                 if (input.nextLine().trim().equals("r")) {
                     return;
                 } else {
-                    addLoan();
+                    addNewLoanDetails();
                     return;
                 }
             }
@@ -118,11 +119,13 @@ public class LoanApp {
             if (checkValidDate(date)) {
                 date = LocalDate.now().toString();
             } else {
-                addLoan();
+                addNewLoanDetails();
             }
 
-            Loan newLoan = new Loan(amount, date);
-            selectedContact.setTotalAmountOwed(amount);
+            selectedContact.addLoan(amount, date);
+
+//            Loan newLoan = new Loan(amount, date);
+//            selectedContact.setTotalAmountOwed(amount);
 
             printBalance(selectedContact);
         }
@@ -163,9 +166,9 @@ public class LoanApp {
         double amountOwed = contact.getTotalAmountOwed();
 
         if (amountOwed < 0) {
-            System.out.println("You owe " + amountOwed + " to " + contact.getName());
+            System.out.println("You owe $" + amountOwed + " to " + contact.getName());
         } else if (amountOwed > 0) {
-            System.out.println(contact.getName() + " owes you " + amountOwed);
+            System.out.println(contact.getName() + " owes you $" + amountOwed);
         } else {
             System.out.println("Congratulations! You owe each other nothing.");
         }

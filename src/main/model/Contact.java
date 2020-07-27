@@ -6,18 +6,16 @@ package model;
 
 public class Contact {
     private String name;
-    private double totalAmountOwed; // positive if they owe me, negative if I owe them; TODO: change to currency later!
+    private double totalAmountOwed; // positive if they owe me, negative if I owe them
     private LoanList loanList;
-    private boolean user; // true if they have an account, false if not
-    private Account account; // account associated with user given that boolean user is true, null if false
     private PaymentHistory paymentHistory;
 
+    // EFFECTS: constructs a contact with given name and default values of $0 owed, an empty loanList and an empty
+    //          payment history
     public Contact(String name) {
         this.name = name;
         this.totalAmountOwed = 0.00;
-        this.loanList = null;
-        this.user = false;
-        this.account = null;
+        this.loanList = new LoanList();
         this.paymentHistory = new PaymentHistory(this);
     }
 
@@ -29,17 +27,47 @@ public class Contact {
         return this.totalAmountOwed;
     }
 
-    public double setTotalAmountOwed(double amount) {
+    public LoanList getLoanList() {
+        return this.loanList;
+    }
+
+    public PaymentHistory getPaymentHistory() {
+        return this.paymentHistory; // TODO: should these be this.jngks or just jngks??
+    }
+
+    // REQUIRES: amount owed from user to someone else is negative, amount owed to user from someone else is positive
+    // MODIFIES: this (totalAmountOwed)
+    // EFFECTS: changes amount owed after a loan is added
+    public double addLoanToAmountOwed(double amount) {
         totalAmountOwed = totalAmountOwed + amount;
         return totalAmountOwed;
     }
 
+    // REQUIRES: positive value for amount someone else pays the user, negative for amount user pays someone else
+    // MODIFIES: this (totalAmountOwed)
+    // EFFECTS: subtract amount paid from amount owed
     public double addPaymentToTotal(double amount) {
         totalAmountOwed = totalAmountOwed - amount;
         return totalAmountOwed;
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds a payment to the payment history
     public void addPaymentToHistory(Payment payment) {
         paymentHistory.addPaymentToHistory(payment);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: changes total amount to reflect new loan, creates a new loan object, and adds it to the list of loans
+    public void addLoan(double amount, String date) {
+        addLoanToAmountOwed(amount);
+        Loan newLoan = new Loan(amount, date);
+        addLoanToList(newLoan);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: adds a loan to the list of loans
+    public void addLoanToList(Loan loan) {
+        loanList.addLoanToList(loan);
     }
 }

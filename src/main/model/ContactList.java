@@ -8,31 +8,37 @@ import java.util.List;
  */
 
 public class ContactList {
-    List<Contact> contactList;
+    List<Contact> contacts;
 
+    // EFFECTS: constructs a new contact list
     public ContactList() {
-        contactList = new ArrayList<>();
+        contacts = new ArrayList<>();
     }
 
+    // EFFECTS: gets contact corresponding to the given name
     public Contact getContactByName(String name) {
-        for (Contact c : contactList) {
+        for (Contact c : contacts) {
             if (c.getName().equalsIgnoreCase(name)) {
                 return c;
             }
         }
-        // TODO: throw noContactFound exception!! Should prompt user to create a new contact
         return null;
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds contact to list of contacts
     public boolean addContactToList(Contact contact) {
-        return contactList.add(contact);
+        return contacts.add(contact);
     }
 
+    // EFFECTS: returns size of list of contacts
     public int getNumContacts() {
-        return contactList.size();
+        return contacts.size();
     }
 
+    // REQUIRES: 0 <= index < contacts.size()
+    // EFFECTS: gets contact corresponding to the given index
     public Contact getContactFromIndex(int index) {
-        return contactList.get(index);
+        return contacts.get(index);
     }
 }
