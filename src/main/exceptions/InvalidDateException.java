@@ -6,6 +6,7 @@ package exceptions;
 
 public class InvalidDateException extends Exception {
 
+    // EFFECTS: error message deals with invalid dates that are input by user
     public InvalidDateException(String date, String errMsg) {
         super(date + errMsg);
     }
