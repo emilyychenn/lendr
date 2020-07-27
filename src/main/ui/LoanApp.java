@@ -3,7 +3,6 @@ package ui;
 import exceptions.InvalidDateException;
 import model.*;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
@@ -23,6 +22,8 @@ public class LoanApp {
     ContactList contactList;
     String user;
     String contactName;
+    private static final String ERROR_MSG = " is an invalid date. Please re-select contact and re-enter date in format"
+                                            + " DD/MM/YYYY with a date on or before Dec 31, 2100.";
 
     // EFFECT: runs the money loaning application
     public LoanApp() {
@@ -133,7 +134,7 @@ public class LoanApp {
     private void promptUserForDate(Contact selectedContact, double amount) {
         System.out.println("Enter date of loan (DD/MM/YYYY): ");
         String date = input.nextLine();
-        if (checkValidDate(date) && checkValidYear(date)) {
+        if (isValidDate(date)) {
             selectedContact.addLoan(amount, date);
             printBalance(selectedContact);
         } else {
@@ -142,8 +143,9 @@ public class LoanApp {
     }
 
     // EFFECTS: checks that the date is in the correct format and is indeed a real date
-    public static boolean checkValidDate(String dateToValidate) {
+    public static boolean isValidDate(String dateToValidate) {
         String dateFormat = "dd/MM/yyyy";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         if (dateToValidate == null) {
             return false;
@@ -154,23 +156,26 @@ public class LoanApp {
 
         try {
             Date date = sdf.parse(dateToValidate); // will throw ParseException if invalid
-            if (!checkValidYear(dateToValidate)) {
-                throw new InvalidDateException();
+            Date latestDate = new Date(2100, 12, 31);
+            if (date.after(latestDate)) {
+                throw new InvalidDateException(dateToValidate, ERROR_MSG);
             }
             System.out.println(dateToValidate + " is a valid date.");
         } catch (DateTimeParseException | ParseException | InvalidDateException e) {
-            System.out.println(dateToValidate + " is an invalid date. Please re-select contact and re-enter date"
-                                              + " in format DD/MM/YYYY with a date before Dec 31, 2100.");
+            System.out.println(dateToValidate + ERROR_MSG);
             return false;
         }
+//            try {
+//                throw new InvalidDateException(dateToValidate, ERROR_MSG);
+//            } catch (InvalidDateException ie) {
+//                System.out.println(ie.getMessage());
+//                return false;
+//            }
+//        } catch (InvalidDateException e) {
+//            System.out.println(dateToValidate + ERROR_MSG);
+//            return false;
+//        }
         return true;
-    }
-
-    // EFFECTS: checks that the year is on or before 2100
-    public static boolean checkValidYear(String strDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate date = LocalDate.parse(strDate, formatter);
-        return (!(date.isAfter(LocalDate.of(2100,12,31))));
     }
 
     // MODIFIES: this
