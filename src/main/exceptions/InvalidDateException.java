@@ -6,4 +6,8 @@ package exceptions;
 
 public class InvalidDateException extends Exception {
 
+    public InvalidDateException(String date, String errMsg) {
+        super(date + errMsg);
+    }
+
 }
