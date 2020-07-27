@@ -14,10 +14,12 @@ public class Loan {
         this.dateOwed = dateOwed;
     }
 
+    // EFFECTS: returns total sum of loan (does not take payments into account)
     public double getTotalAmountOwed() {
         return this.totalAmountOwed;
     }
 
+    // EFFECTS: returns date of loan
     public String getDateOwed() {
         return this.dateOwed;
     }

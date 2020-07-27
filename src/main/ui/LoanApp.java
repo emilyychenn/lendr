@@ -121,6 +121,16 @@ public class LoanApp {
         }
     }
 
+    // EFFECTS: prompts user when given contact name does not belong to an existing contact (when adding a loan)
+    private void foundNoContactToLoan(String contactName) {
+        System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
+                + "main menu or any other key to select an existing contact.");
+        if (!(input.nextLine().trim().equals("r"))) {
+            addNewLoanDetails();
+        }
+    }
+
+    // EFFECTS: prompts user for a date and checks that the given date is valid
     private void promptUserForDate(Contact selectedContact, double amount) {
         System.out.println("Enter date of loan (DD/MM/YYYY): ");
         String date = input.nextLine();
@@ -132,14 +142,7 @@ public class LoanApp {
         }
     }
 
-    private void foundNoContactToLoan(String contactName) {
-        System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
-                + "main menu or any other key to select an existing contact.");
-        if (!(input.nextLine().trim().equals("r"))) {
-            addNewLoanDetails();
-        }
-    }
-
+    // EFFECTS: checks that the date is in the correct format and is indeed a real date
     public static boolean checkValidDate(String dateToValidate) {
         String dateFormat = "dd/MM/yyyy";
 
@@ -164,6 +167,7 @@ public class LoanApp {
         return true;
     }
 
+    // EFFECTS: checks that the year is on or before 2100
     public static boolean checkValidYear(String strDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate date = LocalDate.parse(strDate, formatter);
@@ -258,6 +262,7 @@ public class LoanApp {
         }
     }
 
+    // EFFECTS: prompts user when given contact name does not belong to an existing contact (when adding a payment)
     private void foundNoContactToPay(String contactName) {
         System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
                 + "main menu or any other key to select an existing contact.");
@@ -266,6 +271,7 @@ public class LoanApp {
         }
     }
 
+    // EFFECTS: initializes a new payment and adds it to the contact's payment history
     public void initNewPayment(Contact selectedContact, double amount) {
         Payment newPayment = new Payment(selectedContact, amount);
         selectedContact.addPaymentToTotal(amount);

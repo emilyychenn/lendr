@@ -22,6 +22,7 @@ public class PaymentHistory {
         payments.add(payment);
     }
 
+    // EFFECTS: returns the number of payments in the payment history
     public int getNumPayments() {
         return payments.size();
     }
