@@ -2,7 +2,6 @@ package ui;
 
 import model.*;
 
-import java.time.LocalDate;
 import java.util.Scanner;
 
 import java.text.SimpleDateFormat;
@@ -92,14 +91,14 @@ public class LoanApp {
     // EFFECTS: conducts a new loan transaction
     // TODO: change this to addNewLoanDetails() and extrapolate addLoan()
     private void addNewLoanDetails() {
-        System.out.print("Contact List: " + viewContactNames());
+        System.out.print("\nContact List: " + viewContactNames());
         if (viewContactNames() == "No contacts to show.") {
             System.out.println("\nYou must create a contact before adding a loan.");
         } else {
             System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
             String contactName = input.nextLine();
-
             Contact selectedContact = contactList.getContactByName(contactName);
+
             if (selectedContact == null) {
                 System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
                         + "main menu or any other key to select an existing contact.");
@@ -111,45 +110,66 @@ public class LoanApp {
                 }
             }
 
-            System.out.print("Enter loan amount (positive for amount they owe you, negative for amount you owe them): $");
-            double amount = input.nextDouble();
+//            if (nullContactForLoan(selectedContact, contactName).equals("return to main menu")) {
+//                return;
+//            } else if (nullContactForLoan(selectedContact, contactName).equals("reselect contact")) {
+//                addNewLoanDetails();
+//            }
 
-            System.out.println("Enter date of loan (MM/DD/YYYY): ");
+            System.out.print("Enter loan amount (positive for amount they owe, negative for amount you owe): $");
+            double amount = Double.parseDouble(input.nextLine());
+
+            System.out.println("Enter date of loan (DD/MM/YYYY): ");
             String date = input.nextLine();
-            if (checkValidDate(date)) {
-                date = LocalDate.now().toString();
-            } else {
+
+            if (!(checkValidDate(date))) {
+                amount = 0;
                 addNewLoanDetails();
+            } else {  // loan is a valid date
+                selectedContact.addLoan(amount, date);
+                printBalance(selectedContact);
             }
-
-            selectedContact.addLoan(amount, date);
-
-//            Loan newLoan = new Loan(amount, date);
-//            selectedContact.setTotalAmountOwed(amount);
-
-            printBalance(selectedContact);
         }
     }
 
-    // EFFECTS: returns true if given date is a valid date and is in a valid format
-    public static boolean checkValidDate(String strDate) {
-        if (strDate.trim().equals("")) {
-            return true;
-        } else {
-            SimpleDateFormat sdfrmt = new SimpleDateFormat("MM/DD/YYYY");
-            sdfrmt.setLenient(false);
-            try {
-                Date javaDate = sdfrmt.parse(strDate); // checks if can parse the string into date
-                System.out.println(strDate + " is the date entered.");
-            } catch (ParseException e) {
-                System.out.println(strDate + " is an invalid date. Please re-select contact and re-enter date "
-                                            + "in format MM/DD/YYYY.\n");
-                return false;
-            }
-            return true;
+//    public String nullContactForLoan(Contact selectedContact, String contactName) {
+//        if (selectedContact == null) {
+//            System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
+//                    + "main menu or any other key to select an existing contact.");
+//            if (input.nextLine().trim().equals("r")) {
+//                return "return to main menu";
+//            } else {
+//                return "reselect contact";
+//            }
+//        }
+//        return "continue";
+//    }
+
+    public static boolean checkValidDate(String dateToValidate) {
+        String dateFormat = "dd/MM/yyyy";
+        // TODO: somehow the data 12/12/201030 is reading as a valid date... double check dateFormat rules
+        // the problem is that max year is like 99999999999 or something, meaning this really is a valid date,
+        // just really far in the future... ASK ABOUT THIS AT OFFICE HRS!!
+
+        if (dateToValidate == null) {
+            return false;
         }
+
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        sdf.setLenient(false);
+
+        try {
+            Date date = sdf.parse(dateToValidate); // will throw ParseException if invalid
+            System.out.println(dateToValidate + " is a valid date.");
+        } catch (ParseException e) {
+            System.out.println(dateToValidate + " is an invalid date. Please re-select contact and re-enter date"
+                                              + " in format DD/MM/YYYY.");
+            return false;
+        }
+        return true;
     }
 
+    // TODO: REQUIRES: contact cannot have the same name as user or same name as another contact
     // MODIFIES: this
     // EFFECTS: creates a new contact to whom a loan or a payment can be added
     public void createContact() {
@@ -228,14 +248,17 @@ public class LoanApp {
 
             System.out.print("Enter payment amount (positive for amount they paid you, negative for amount "
                     + "you paid them): $");
-            double amount = input.nextDouble();
+            double amount = Double.parseDouble(input.nextLine());
 
-            Payment newPayment = new Payment(selectedContact, amount);
-            selectedContact.addPaymentToTotal(amount);
-            selectedContact.addPaymentToHistory(newPayment);
-
+            initNewPayment(selectedContact, amount);
             printBalance(selectedContact);
         }
+    }
+
+    public void initNewPayment(Contact selectedContact, double amount) {
+        Payment newPayment = new Payment(selectedContact, amount);
+        selectedContact.addPaymentToTotal(amount);
+        selectedContact.addPaymentToHistory(newPayment);
     }
 
 }
