@@ -1,7 +1,6 @@
 package ui;
 
 import exceptions.InvalidDateException;
-import jdk.nashorn.internal.runtime.ParserException;
 import model.*;
 
 import java.time.LocalDate;
