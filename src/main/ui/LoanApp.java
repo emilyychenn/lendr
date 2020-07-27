@@ -1,4 +1,6 @@
-package model;
+package ui;
+
+import model.*;
 
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -7,6 +9,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.text.ParseException;
 
+/**
+ *  Represents the main source of interaction between the user and the console. The methods runLoanApp(), init(),
+ *  displayMenu(), and processCommand() are based off the TellerApp example presented in class.
+ */
+
 public class LoanApp {
     private Scanner input;
     Account newAccount;
@@ -14,14 +21,13 @@ public class LoanApp {
     String user;
     String contactName;
 
+    // EFFECT: runs the money loaning application
     public LoanApp() {
         runLoanApp();
     }
 
-    // TODO: methods to be implemented:
-    // calculateTotalBalance()
-
-    // TODO: based off TellerApp (should this be referenced/cited somewhere??)
+    // MODIFIES: this
+    // EFFECTS: processes user input
     private void runLoanApp() {
         System.out.println("Welcome to the Money Loaning Tracker 💵");
         boolean keepGoing = true;
@@ -31,7 +37,6 @@ public class LoanApp {
         System.out.println("Enter your name: ");
         user = input.nextLine();
         init(user);
-//        loadAccounts(user); // TODO!!
         System.out.println("Hello, " + user + ".");
 
         while (keepGoing) {
@@ -50,20 +55,7 @@ public class LoanApp {
     }
 
     // MODIFIES: this
-    // EFFECTS: loads accounts from ACCOUNTS_FILE, if that file exists;
-    // otherwise initializes accounts with default values
-//    private void loadAccounts(String name) {
-////        try {
-////            List<Account> accounts = Reader.readAccounts(new File(ACCOUNTS_FILE));
-////            cheq = accounts.get(0);
-////            sav = accounts.get(1);
-////        } catch (IOException e) {
-////            init(name);
-////        }
-//    }
-
-    // MODIFIES: this
-    // EFFECTS: initializes account and contact list
+    // EFFECTS: initializes user's account and contact list
     private void init(String name) {
         newAccount = new Account(name);
         contactList = new ContactList();
@@ -75,8 +67,6 @@ public class LoanApp {
         System.out.println("\ta -> add loan");
         System.out.println("\tc -> create a new contact");
         System.out.println("\tp -> enter a payment");
-//        System.out.println("\te -> edit loan details");
-//        System.out.println("\ts -> save transaction history to file");
         System.out.println("\tv -> view contact list");
         System.out.println("\tq -> quit");
     }
@@ -90,10 +80,6 @@ public class LoanApp {
             createContact();
         } else if (command.equals("p")) {
             addPayment();
-//        } else if (command.equals("e")) {
-////            editLoan();   // to be implemented later
-//        } else if (command.equals("s")) {
-////            saveTransactionHistory();    // to be implemented later
         } else if (command.equals("v")) {
             viewContactList();
         } else {
@@ -103,7 +89,7 @@ public class LoanApp {
 
 
     // MODIFIES: this
-    // EFFECTS: conducts a deposit transaction
+    // EFFECTS: conducts a new loan transaction
     private void addLoan() {
         System.out.print("Contact List: " + viewContactNames());
         if (viewContactNames() == "No contacts to show.") {
@@ -142,15 +128,15 @@ public class LoanApp {
         }
     }
 
+    // EFFECTS: returns true if given date is a valid date and is in a valid format
     public static boolean checkValidDate(String strDate) {
         if (strDate.trim().equals("")) {
             return true;
         } else {
             SimpleDateFormat sdfrmt = new SimpleDateFormat("MM/DD/YYYY");
             sdfrmt.setLenient(false);
-            /* Create Date object parse the string into date */
             try {
-                Date javaDate = sdfrmt.parse(strDate);
+                Date javaDate = sdfrmt.parse(strDate); // checks if can parse the string into date
                 System.out.println(strDate + " is the date entered.");
             } catch (ParseException e) {
                 System.out.println(strDate + " is an invalid date. Please re-select contact and re-enter date "
@@ -161,6 +147,8 @@ public class LoanApp {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates a new contact to whom a loan or a payment can be added
     public void createContact() {
         System.out.println("Contact's name: ");
         contactName = input.nextLine();
@@ -170,6 +158,7 @@ public class LoanApp {
         System.out.println("Contact " + contactName + " added to contact list.");
     }
 
+    // EFFECTS: prints balance owed to a specific contact
     public void printBalance(Contact contact) {
         double amountOwed = contact.getTotalAmountOwed();
 
@@ -182,7 +171,8 @@ public class LoanApp {
         }
     }
 
-
+    // EFFECTS: prints full contact list and amount owed to/from each contact, positive for amount owed to user and
+    //          negative for amount owed to the user's contact
     public void viewContactList() {
         if (contactList.getNumContacts() == 0) {
             System.out.println("No contacts to show.");
@@ -196,6 +186,7 @@ public class LoanApp {
         }
     }
 
+    // EFFECTS: prints only contact's names for easy selection when adding a loan or a payment
     public String viewContactNames() {
         String contactNames = "";
         if (contactList.getNumContacts() == 0) {
@@ -210,6 +201,8 @@ public class LoanApp {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: conducts a new payment transaction
     public void addPayment() {
         System.out.print("\nContact List: " + viewContactNames());
         if (viewContactNames() == "No contacts to show.") {

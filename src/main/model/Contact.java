@@ -1,5 +1,9 @@
 package model;
 
+/**
+ *  Represents one of the user's contacts to whom the user owes money to or who owe money to the user.
+ */
+
 public class Contact {
     private String name;
     private double totalAmountOwed; // positive if they owe me, negative if I owe them; TODO: change to currency later!
@@ -38,9 +42,4 @@ public class Contact {
     public void addPaymentToHistory(Payment payment) {
         paymentHistory.addPaymentToHistory(payment);
     }
-
-    // TODO: METHODS TO IMPLEMENT:
-    // viewTransactionHistory()
-    // addLoan()
-
 }

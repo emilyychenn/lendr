@@ -3,6 +3,10 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  Represents a list of the user's contacts.
+ */
+
 public class ContactList {
     List<Contact> contactList;
 

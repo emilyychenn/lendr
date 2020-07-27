@@ -1,6 +1,8 @@
 package ui;
 
-import model.LoanApp;
+/**
+ *  Main: runs the program.
+ */
 
 public class Main {
     public static void main(String[] args) {
