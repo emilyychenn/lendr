@@ -49,4 +49,13 @@ public class ContactListTest {
         assertEquals(contact1, contactList.getContactFromIndex(0));
         assertEquals(contact3, contactList.getContactFromIndex(2));
     }
+
+    @Test
+    public void testContainsByName() {
+        assertTrue(contactList.containsByName("Felix"));
+        assertFalse(contactList.containsByName("Emily"));
+        assertTrue(contactList.containsByName("Nick"));
+        assertTrue(contactList.containsByName("Arthur"));
+        assertFalse(contactList.containsByName("Hello"));
+    }
 }

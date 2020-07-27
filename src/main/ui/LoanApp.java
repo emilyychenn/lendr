@@ -89,7 +89,6 @@ public class LoanApp {
 
     // MODIFIES: this
     // EFFECTS: conducts a new loan transaction
-    // TODO: change this to addNewLoanDetails() and extrapolate addLoan()
     private void addNewLoanDetails() {
         System.out.print("\nContact List: " + viewContactNames());
         if (viewContactNames() == "No contacts to show.") {
@@ -100,21 +99,9 @@ public class LoanApp {
             Contact selectedContact = contactList.getContactByName(contactName);
 
             if (selectedContact == null) {
-                System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
-                        + "main menu or any other key to select an existing contact.");
-                if (input.nextLine().trim().equals("r")) {
-                    return;
-                } else {
-                    addNewLoanDetails();
-                    return;
-                }
+                foundNoContactToLoan(contactName);
+                return;
             }
-
-//            if (nullContactForLoan(selectedContact, contactName).equals("return to main menu")) {
-//                return;
-//            } else if (nullContactForLoan(selectedContact, contactName).equals("reselect contact")) {
-//                addNewLoanDetails();
-//            }
 
             System.out.print("Enter loan amount (positive for amount they owe, negative for amount you owe): $");
             double amount = Double.parseDouble(input.nextLine());
@@ -132,24 +119,21 @@ public class LoanApp {
         }
     }
 
-//    public String nullContactForLoan(Contact selectedContact, String contactName) {
-//        if (selectedContact == null) {
-//            System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
-//                    + "main menu or any other key to select an existing contact.");
-//            if (input.nextLine().trim().equals("r")) {
-//                return "return to main menu";
-//            } else {
-//                return "reselect contact";
-//            }
-//        }
-//        return "continue";
-//    }
+    private void foundNoContactToLoan(String contactName) {
+        System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
+                + "main menu or any other key to select an existing contact.");
+        if (input.nextLine().trim().equals("r")) {
+            return;
+        } else {
+            addNewLoanDetails();
+            return;
+        }
+    }
 
     public static boolean checkValidDate(String dateToValidate) {
         String dateFormat = "dd/MM/yyyy";
         // TODO: somehow the data 12/12/201030 is reading as a valid date... double check dateFormat rules
-        // the problem is that max year is like 99999999999 or something, meaning this really is a valid date,
-        // just really far in the future... ASK ABOUT THIS AT OFFICE HRS!!
+        // the problem is that max year is like 99999999999 or something, meaning this really is a valid date...
 
         if (dateToValidate == null) {
             return false;
@@ -169,16 +153,20 @@ public class LoanApp {
         return true;
     }
 
-    // TODO: REQUIRES: contact cannot have the same name as user or same name as another contact
     // MODIFIES: this
     // EFFECTS: creates a new contact to whom a loan or a payment can be added
     public void createContact() {
         System.out.println("Contact's name: ");
         contactName = input.nextLine();
 
-        Contact newContact = new Contact(contactName);
-        contactList.addContactToList(newContact);
-        System.out.println("Contact " + contactName + " added to contact list.");
+        if (contactList.containsByName(contactName)) {
+            System.out.println(contactName + " already exists as a contact. Please enter a different name.");
+            return;
+        } else {
+            Contact newContact = new Contact(contactName);
+            contactList.addContactToList(newContact);
+            System.out.println("Contact " + contactName + " added to contact list.");
+        }
     }
 
     // EFFECTS: prints balance owed to a specific contact
@@ -233,17 +221,11 @@ public class LoanApp {
         } else {
             System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
             String contactName = input.nextLine();
-
             Contact selectedContact = contactList.getContactByName(contactName);
+
             if (selectedContact == null) {
-                System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
-                        + "main menu or any other key to select an existing contact.");
-                if (input.nextLine().trim().equals("r")) {
-                    return;
-                } else {
-                    addPayment();
-                    return;
-                }
+                foundNoContactToPay(contactName);
+                return;
             }
 
             System.out.print("Enter payment amount (positive for amount they paid you, negative for amount "
@@ -252,6 +234,17 @@ public class LoanApp {
 
             initNewPayment(selectedContact, amount);
             printBalance(selectedContact);
+        }
+    }
+
+    private void foundNoContactToPay(String contactName) {
+        System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
+                + "main menu or any other key to select an existing contact.");
+        if (input.nextLine().trim().equals("r")) {
+            return;
+        } else {
+            addPayment();
+            return;
         }
     }
 

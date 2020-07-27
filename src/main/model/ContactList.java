@@ -41,4 +41,14 @@ public class ContactList {
     public Contact getContactFromIndex(int index) {
         return contacts.get(index);
     }
+
+    // EFFECTS: returns true if given contact is in the list
+    public Boolean containsByName(String name) {
+        for (Contact c : contacts) {
+            if (c.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
