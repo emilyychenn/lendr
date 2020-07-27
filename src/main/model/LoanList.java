@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LoanList {
-    List<Loan> loanList;
+    List<Loan> loans;
 
     public LoanList() {
-        loanList = new ArrayList<>();
+        loans = new ArrayList<>();
     }
 }

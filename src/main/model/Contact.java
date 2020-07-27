@@ -2,27 +2,23 @@ package model;
 
 public class Contact {
     private String name;
-    private String phoneNum;
     private double totalAmountOwed; // positive if they owe me, negative if I owe them; TODO: change to currency later!
     private LoanList loanList;
     private boolean user; // true if they have an account, false if not
     private Account account; // account associated with user given that boolean user is true, null if false
+    private PaymentHistory paymentHistory;
 
-    public Contact(String name, String phoneNum) {
+    public Contact(String name) {
         this.name = name;
-        this.phoneNum = phoneNum;
         this.totalAmountOwed = 0.00;
         this.loanList = null;
         this.user = false;
         this.account = null;
+        this.paymentHistory = new PaymentHistory(this);
     }
 
     public String getName() {
         return this.name;
-    }
-
-    public String getPhoneNum() {
-        return this.phoneNum;
     }
 
     public double getTotalAmountOwed() {
@@ -32,6 +28,15 @@ public class Contact {
     public double setTotalAmountOwed(double amount) {
         totalAmountOwed = totalAmountOwed + amount;
         return totalAmountOwed;
+    }
+
+    public double addPaymentToTotal(double amount) {
+        totalAmountOwed = totalAmountOwed - amount;
+        return totalAmountOwed;
+    }
+
+    public void addPaymentToHistory(Payment payment) {
+        paymentHistory.addPaymentToHistory(payment);
     }
 
     // TODO: METHODS TO IMPLEMENT:

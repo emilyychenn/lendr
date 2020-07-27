@@ -1,27 +1,25 @@
 package model;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Scanner;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.text.ParseException;
 
 public class LoanApp {
     private Scanner input;
     Account newAccount;
     ContactList contactList;
     String user;
+    String contactName;
 
     public LoanApp() {
         runLoanApp();
     }
 
     // TODO: methods to be implemented:
-    // basic constructor
     // calculateTotalBalance()
-    // addContact()
-    // selectContact()
-    // listContacts() // TODO: should this be included?? it's already in account...
 
     // TODO: based off TellerApp (should this be referenced/cited somewhere??)
     private void runLoanApp() {
@@ -31,14 +29,14 @@ public class LoanApp {
         input = new Scanner(System.in);
 
         System.out.println("Enter your name: ");
-        user = input.next();
+        user = input.nextLine();
         init(user);
-        loadAccounts(user); // TODO!!
+//        loadAccounts(user); // TODO!!
         System.out.println("Hello, " + user + ".");
 
         while (keepGoing) {
             displayMenu();
-            command = input.next();
+            command = input.nextLine();
             command = command.toLowerCase();
 
             if (command.equals("q")) {
@@ -54,15 +52,15 @@ public class LoanApp {
     // MODIFIES: this
     // EFFECTS: loads accounts from ACCOUNTS_FILE, if that file exists;
     // otherwise initializes accounts with default values
-    private void loadAccounts(String name) {
-//        try {
-//            List<Account> accounts = Reader.readAccounts(new File(ACCOUNTS_FILE));
-//            cheq = accounts.get(0);
-//            sav = accounts.get(1);
-//        } catch (IOException e) {
-//            init(name);
-//        }
-    }
+//    private void loadAccounts(String name) {
+////        try {
+////            List<Account> accounts = Reader.readAccounts(new File(ACCOUNTS_FILE));
+////            cheq = accounts.get(0);
+////            sav = accounts.get(1);
+////        } catch (IOException e) {
+////            init(name);
+////        }
+//    }
 
     // MODIFIES: this
     // EFFECTS: initializes account and contact list
@@ -71,7 +69,6 @@ public class LoanApp {
         contactList = new ContactList();
     }
 
-    // TODO: EDIT THIS MENU TO REFLECT APPROPRIATE OPTIONS
     // EFFECTS: displays menu of options to user
     private void displayMenu() {
         System.out.println("\nSelect from:");
@@ -84,27 +81,19 @@ public class LoanApp {
         System.out.println("\tq -> quit");
     }
 
-    // TODO: EDIT THIS TO REFLECT APPROPRIATE OPTIONS
     // MODIFIES: this
     // EFFECTS: processes user command
     private void processCommand(String command) {
         if (command.equals("a")) {
             addLoan();
         } else if (command.equals("c")) {
-            System.out.println("Contact's name: ");
-            String contactName = input.next();
-            System.out.println("Contact's phone number, entered as XXX-XXX-XXXX: ");
-            String phoneNum = input.next(); //test for special characters, too many digits, etc
-
-            Contact newContact = new Contact(contactName, phoneNum);
-            contactList.addContactToList(newContact);
-            System.out.println("Contact " + contactName + " added to contact list.");
+            createContact();
         } else if (command.equals("p")) {
-//            addPayment(); // TODO!!
-        } else if (command.equals("e")) {
-//            editLoan();   // TODO!!
-        } else if (command.equals("s")) {
-//            saveTransactionHistory();    // TODO!!
+            addPayment();
+//        } else if (command.equals("e")) {
+////            editLoan();   // to be implemented later
+//        } else if (command.equals("s")) {
+////            saveTransactionHistory();    // to be implemented later
         } else if (command.equals("v")) {
             viewContactList();
         } else {
@@ -116,35 +105,69 @@ public class LoanApp {
     // MODIFIES: this
     // EFFECTS: conducts a deposit transaction
     private void addLoan() {
-        System.out.print("Contact List: ");
-        System.out.println(viewContactNames());
+        System.out.print("Contact List: " + viewContactNames());
         if (viewContactNames() == "No contacts to show.") {
-            System.out.println("You must create a contact before adding a loan.");
+            System.out.println("\nYou must create a contact before adding a loan.");
         } else {
-            System.out.println("Enter a contact from list above (name is not case sensitive): ");
-            String contactName = input.next();
+            System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
+            String contactName = input.nextLine();
+
+            Contact selectedContact = contactList.getContactByName(contactName);
+            if (selectedContact == null) {
+                System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
+                        + "main menu or any other key to select an existing contact.");
+                if (input.nextLine().trim().equals("r")) {
+                    return;
+                } else {
+                    addLoan();
+                    return;
+                }
+            }
 
             System.out.print("Enter loan amount (positive for amount they owe you, negative for amount you owe them): $");
             double amount = input.nextDouble();
 
-            System.out.println("Enter date of loan (MM/DD/YY), or 't' for today's date: ");
-            String date = input.next();
-            if (date == "t") {
+            System.out.println("Enter date of loan (MM/DD/YYYY): ");
+            String date = input.nextLine();
+            if (checkValidDate(date)) {
                 date = LocalDate.now().toString();
-            } else if (! date.matches("\\(0?[1-9]|1[012])-\\(0?[1-9]|[12][0-9]|3[01])-\\d{2}")) {
-                System.out.println("Invalid date. Please enter date in format MM/DD/YY.");
+            } else {
+                addLoan();
             }
 
-            Contact selectedContact = contactList.getContactByName(contactName);
-            if (selectedContact == null) {
-                System.out.println(contactName + " doesn't exist in your contact list. Select a contact from "
-                        + "your existing contacts or create a new contact.");
-            }
             Loan newLoan = new Loan(amount, date);
             selectedContact.setTotalAmountOwed(amount);
 
             printBalance(selectedContact);
         }
+    }
+
+    public static boolean checkValidDate(String strDate) {
+        if (strDate.trim().equals("")) {
+            return true;
+        } else {
+            SimpleDateFormat sdfrmt = new SimpleDateFormat("MM/DD/YYYY");
+            sdfrmt.setLenient(false);
+            /* Create Date object parse the string into date */
+            try {
+                Date javaDate = sdfrmt.parse(strDate);
+                System.out.println(strDate + " is the date entered.");
+            } catch (ParseException e) {
+                System.out.println(strDate + " is an invalid date. Please re-select contact and re-enter date "
+                                            + "in format MM/DD/YYYY.\n");
+                return false;
+            }
+            return true;
+        }
+    }
+
+    public void createContact() {
+        System.out.println("Contact's name: ");
+        contactName = input.nextLine();
+
+        Contact newContact = new Contact(contactName);
+        contactList.addContactToList(newContact);
+        System.out.println("Contact " + contactName + " added to contact list.");
     }
 
     public void printBalance(Contact contact) {
@@ -167,9 +190,8 @@ public class LoanApp {
             for (int i = 0; i < contactList.getNumContacts(); i++) {
                 Contact contact = contactList.getContactFromIndex(i);
                 String contactName = contact.getName();
-                String phoneNum = contact.getPhoneNum();
                 double amountOwed = contact.getTotalAmountOwed();
-                System.out.println(contactName + ": $ " + amountOwed + " owed, phone #: (" + phoneNum + ")");
+                System.out.println(contactName + ": $ " + amountOwed + " owed");
             }
         }
     }
@@ -189,7 +211,35 @@ public class LoanApp {
     }
 
     public void addPayment() {
+        System.out.print("\nContact List: " + viewContactNames());
+        if (viewContactNames() == "No contacts to show.") {
+            System.out.println("\nYou must create a contact before adding a payment.");
+        } else {
+            System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
+            String contactName = input.nextLine();
 
+            Contact selectedContact = contactList.getContactByName(contactName);
+            if (selectedContact == null) {
+                System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
+                        + "main menu or any other key to select an existing contact.");
+                if (input.nextLine().trim().equals("r")) {
+                    return;
+                } else {
+                    addPayment();
+                    return;
+                }
+            }
+
+            System.out.print("Enter payment amount (positive for amount they paid you, negative for amount "
+                    + "you paid them): $");
+            double amount = input.nextDouble();
+
+            Payment newPayment = new Payment(selectedContact, amount);
+            selectedContact.addPaymentToTotal(amount);
+            selectedContact.addPaymentToHistory(newPayment);
+
+            printBalance(selectedContact);
+        }
     }
 
 }
