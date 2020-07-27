@@ -165,16 +165,6 @@ public class LoanApp {
             System.out.println(dateToValidate + ERROR_MSG);
             return false;
         }
-//            try {
-//                throw new InvalidDateException(dateToValidate, ERROR_MSG);
-//            } catch (InvalidDateException ie) {
-//                System.out.println(ie.getMessage());
-//                return false;
-//            }
-//        } catch (InvalidDateException e) {
-//            System.out.println(dateToValidate + ERROR_MSG);
-//            return false;
-//        }
         return true;
     }
 
