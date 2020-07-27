@@ -2,6 +2,7 @@ package ui;
 
 import model.*;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
 import java.text.SimpleDateFormat;
@@ -91,7 +92,7 @@ public class LoanApp {
     // EFFECTS: conducts a new loan transaction
     private void addNewLoanDetails() {
         System.out.print("\nContact List: " + viewContactNames());
-        if (viewContactNames() == "No contacts to show.") {
+        if (viewContactNames().equals("No contacts to show.")) {
             System.out.println("\nYou must create a contact before adding a loan.");
         } else {
             System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
@@ -148,6 +149,15 @@ public class LoanApp {
         } catch (ParseException e) {
             System.out.println(dateToValidate + " is an invalid date. Please re-select contact and re-enter date"
                                               + " in format DD/MM/YYYY.");
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean checkValidYear(LocalDate date) {
+        if (date.isAfter(LocalDate.of(2100,12,31))) {
+            System.out.println(" is an invalid date. Please re-select contact and re-enter date"
+                                + "in format DD/MM/YYYY");
             return false;
         }
         return true;
