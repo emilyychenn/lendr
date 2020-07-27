@@ -17,4 +17,16 @@ public class Payment {
         this.contact = contact;
         this.amount = amount; // +'ve amount is payed to me, -'ve payed to contact
     }
+
+    public LocalDate getDate() {
+        return this.paymentDate;
+    }
+
+    public Contact getContact() {
+        return this.contact;
+    }
+
+    public double getAmount() {
+        return this.amount;
+    }
 }

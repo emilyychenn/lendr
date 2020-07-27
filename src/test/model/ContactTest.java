@@ -71,7 +71,7 @@ class ContactTest {
     }
 
     @Test
-    public void testAddLoanTolist() {
+    public void testAddLoanToList() {
         testLoan = new Loan(50.0, "07/22/2020");
         newContact.addLoanToList(testLoan);
         assertEquals(1, newContact.getLoanList().getSize());

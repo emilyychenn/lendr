@@ -3,7 +3,7 @@ package model;
 import java.util.LinkedList;
 
 /**
- *  Represents the complete payment history (i.e. the payments in a sorted list).
+ *  Represents the complete payment history (i.e. the payments in an ordered list).
  */
 
 public class PaymentHistory {

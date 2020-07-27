@@ -5,12 +5,20 @@ package model;
  */
 
 public class Loan {
-    private double totalAmount;
+    private double totalAmountOwed;
     private String dateOwed;
 
     // EFFECTS: constructs a loan given amount owed and date owed
     public Loan(Double amountOwed, String dateOwed) {
-        this.totalAmount = amountOwed;
+        this.totalAmountOwed = amountOwed;
         this.dateOwed = dateOwed;
+    }
+
+    public double getTotalAmountOwed() {
+        return this.totalAmountOwed;
+    }
+
+    public String getDateOwed() {
+        return this.dateOwed;
     }
 }

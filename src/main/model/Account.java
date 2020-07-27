@@ -19,14 +19,14 @@ public class Account {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public ContactList getContactList() {
-        return contactList;
+        return this.contactList;
     }
 
     public Double getBalance() {
-        return balance;
+        return this.balance;
     }
 }
