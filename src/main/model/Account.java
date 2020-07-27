@@ -18,15 +18,18 @@ public class Account {
         this.contactList = new ContactList();
     }
 
+    // EFFECTS: return's account owner's (user's) name
     public String getName() {
-        return name;
+        return this.name;
     }
 
+    // EFFECTS: returns contact list
     public ContactList getContactList() {
-        return contactList;
+        return this.contactList;
     }
 
+    // EFFECTS: returns account overall balance
     public Double getBalance() {
-        return balance;
+        return this.balance;
     }
 }

@@ -19,20 +19,25 @@ public class Contact {
         this.paymentHistory = new PaymentHistory(this);
     }
 
+    // EFFECTS: returns name of contact
     public String getName() {
         return this.name;
     }
 
+    // EFFECTS: returns total amount owed to/from contact: value is positive if they owe the user and negative if the
+    //          user owes them
     public double getTotalAmountOwed() {
         return this.totalAmountOwed;
     }
 
+    // EFFECTS: returns a list of all the loans between the user and the contact
     public LoanList getLoanList() {
         return this.loanList;
     }
 
+    // EFFECTS: returns the payment history between the user and the contact
     public PaymentHistory getPaymentHistory() {
-        return this.paymentHistory; // TODO: should these be this.jngks or just jngks??
+        return this.paymentHistory;
     }
 
     // REQUIRES: amount owed from user to someone else is negative, amount owed to user from someone else is positive

@@ -1,8 +1,12 @@
 package ui;
 
+import exceptions.InvalidDateException;
+import jdk.nashorn.internal.runtime.ParserException;
 import model.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 import java.text.SimpleDateFormat;
@@ -31,7 +35,7 @@ public class LoanApp {
     private void runLoanApp() {
         System.out.println("Welcome to the Money Loaning Tracker 💵");
         boolean keepGoing = true;
-        String command = null;
+        String command;
         input = new Scanner(System.in);
 
         System.out.println("Enter your name: ");
@@ -90,64 +94,84 @@ public class LoanApp {
 
     // MODIFIES: this
     // EFFECTS: conducts a new loan transaction
-    // TODO: change this to addNewLoanDetails() and extrapolate addLoan()
     private void addNewLoanDetails() {
-        System.out.print("Contact List: " + viewContactNames());
-        if (viewContactNames() == "No contacts to show.") {
+        System.out.print("\nContact List: " + viewContactNames());
+        if (viewContactNames().equals("No contacts to show.")) {
             System.out.println("\nYou must create a contact before adding a loan.");
         } else {
             System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
             String contactName = input.nextLine();
-
             Contact selectedContact = contactList.getContactByName(contactName);
+
             if (selectedContact == null) {
-                System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
-                        + "main menu or any other key to select an existing contact.");
-                if (input.nextLine().trim().equals("r")) {
-                    return;
-                } else {
-                    addNewLoanDetails();
-                    return;
-                }
+                foundNoContactToLoan(contactName);
+                return;
             }
 
-            System.out.print("Enter loan amount (positive for amount they owe you, negative for amount you owe them): $");
-            double amount = input.nextDouble();
-
-            System.out.println("Enter date of loan (MM/DD/YYYY): ");
-            String date = input.nextLine();
-            if (checkValidDate(date)) {
-                date = LocalDate.now().toString();
-            } else {
-                addNewLoanDetails();
+            System.out.print("Enter loan amount (positive for amount they owe, negative for amount you owe): $");
+            double amount;
+            try {
+                amount = Double.parseDouble(input.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid loan amount. (Negative numbers must be in form $-XXX).");
+                return;
             }
 
-            selectedContact.addLoan(amount, date);
-
-//            Loan newLoan = new Loan(amount, date);
-//            selectedContact.setTotalAmountOwed(amount);
-
-            printBalance(selectedContact);
+            promptUserForDate(selectedContact, amount);
         }
     }
 
-    // EFFECTS: returns true if given date is a valid date and is in a valid format
-    public static boolean checkValidDate(String strDate) {
-        if (strDate.trim().equals("")) {
-            return true;
-        } else {
-            SimpleDateFormat sdfrmt = new SimpleDateFormat("MM/DD/YYYY");
-            sdfrmt.setLenient(false);
-            try {
-                Date javaDate = sdfrmt.parse(strDate); // checks if can parse the string into date
-                System.out.println(strDate + " is the date entered.");
-            } catch (ParseException e) {
-                System.out.println(strDate + " is an invalid date. Please re-select contact and re-enter date "
-                                            + "in format MM/DD/YYYY.\n");
-                return false;
-            }
-            return true;
+    // EFFECTS: prompts user when given contact name does not belong to an existing contact (when adding a loan)
+    private void foundNoContactToLoan(String contactName) {
+        System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
+                + "main menu or any other key to select an existing contact.");
+        if (!(input.nextLine().trim().equals("r"))) {
+            addNewLoanDetails();
         }
+    }
+
+    // EFFECTS: prompts user for a date and checks that the given date is valid
+    private void promptUserForDate(Contact selectedContact, double amount) {
+        System.out.println("Enter date of loan (DD/MM/YYYY): ");
+        String date = input.nextLine();
+        if (checkValidDate(date) && checkValidYear(date)) {
+            selectedContact.addLoan(amount, date);
+            printBalance(selectedContact);
+        } else {
+            addNewLoanDetails();
+        }
+    }
+
+    // EFFECTS: checks that the date is in the correct format and is indeed a real date
+    public static boolean checkValidDate(String dateToValidate) {
+        String dateFormat = "dd/MM/yyyy";
+
+        if (dateToValidate == null) {
+            return false;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        sdf.setLenient(false);
+
+        try {
+            Date date = sdf.parse(dateToValidate); // will throw ParseException if invalid
+            if (!checkValidYear(dateToValidate)) {
+                throw new InvalidDateException();
+            }
+            System.out.println(dateToValidate + " is a valid date.");
+        } catch (DateTimeParseException | ParseException | InvalidDateException e) {
+            System.out.println(dateToValidate + " is an invalid date. Please re-select contact and re-enter date"
+                                              + " in format DD/MM/YYYY with a date before Dec 31, 2100.");
+            return false;
+        }
+        return true;
+    }
+
+    // EFFECTS: checks that the year is on or before 2100
+    public static boolean checkValidYear(String strDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate date = LocalDate.parse(strDate, formatter);
+        return (!(date.isAfter(LocalDate.of(2100,12,31))));
     }
 
     // MODIFIES: this
@@ -156,9 +180,13 @@ public class LoanApp {
         System.out.println("Contact's name: ");
         contactName = input.nextLine();
 
-        Contact newContact = new Contact(contactName);
-        contactList.addContactToList(newContact);
-        System.out.println("Contact " + contactName + " added to contact list.");
+        if (contactList.containsByName(contactName)) {
+            System.out.println(contactName + " already exists as a contact. Please enter a different name.");
+        } else {
+            Contact newContact = new Contact(contactName);
+            contactList.addContactToList(newContact);
+            System.out.println("Contact " + contactName + " added to contact list.");
+        }
     }
 
     // EFFECTS: prints balance owed to a specific contact
@@ -197,8 +225,7 @@ public class LoanApp {
         } else {
             for (int i = 0; i < contactList.getNumContacts(); i++) {
                 Contact contact = contactList.getContactFromIndex(i);
-                String contactName = contact.getName();
-                contactNames = contactNames + "\n" + contactName;
+                contactNames = contactNames.concat("\n" + contact.getName());
             }
             return contactNames;
         }
@@ -208,34 +235,47 @@ public class LoanApp {
     // EFFECTS: conducts a new payment transaction
     public void addPayment() {
         System.out.print("\nContact List: " + viewContactNames());
-        if (viewContactNames() == "No contacts to show.") {
+        if (viewContactNames().equals("No contacts to show.")) {
             System.out.println("\nYou must create a contact before adding a payment.");
         } else {
             System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
             String contactName = input.nextLine();
-
             Contact selectedContact = contactList.getContactByName(contactName);
+
             if (selectedContact == null) {
-                System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
-                        + "main menu or any other key to select an existing contact.");
-                if (input.nextLine().trim().equals("r")) {
-                    return;
-                } else {
-                    addPayment();
-                    return;
-                }
+                foundNoContactToPay(contactName);
+                return;
             }
 
             System.out.print("Enter payment amount (positive for amount they paid you, negative for amount "
                     + "you paid them): $");
-            double amount = input.nextDouble();
+            double amount;
+            try {
+                amount = Double.parseDouble(input.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid payment amount. (Negative numbers must be in form $-XXX).");
+                return;
+            }
 
-            Payment newPayment = new Payment(selectedContact, amount);
-            selectedContact.addPaymentToTotal(amount);
-            selectedContact.addPaymentToHistory(newPayment);
-
+            initNewPayment(selectedContact, amount);
             printBalance(selectedContact);
         }
+    }
+
+    // EFFECTS: prompts user when given contact name does not belong to an existing contact (when adding a payment)
+    private void foundNoContactToPay(String contactName) {
+        System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
+                + "main menu or any other key to select an existing contact.");
+        if (!(input.nextLine().trim().equals("r"))) {
+            addPayment();
+        }
+    }
+
+    // EFFECTS: initializes a new payment and adds it to the contact's payment history
+    public void initNewPayment(Contact selectedContact, double amount) {
+        Payment newPayment = new Payment(selectedContact, amount);
+        selectedContact.addPaymentToTotal(amount);
+        selectedContact.addPaymentToHistory(newPayment);
     }
 
 }
