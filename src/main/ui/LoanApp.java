@@ -92,6 +92,7 @@ public class LoanApp {
     }
 
 
+    // REQUIRES: valid amount (double)
     // MODIFIES: this
     // EFFECTS: conducts a new loan transaction
     private void addNewLoanDetails() {
@@ -142,6 +143,7 @@ public class LoanApp {
         }
     }
 
+    // REQUIRES: valid date format 'DD/MM/YYYY' and valid date
     // EFFECTS: checks that the date is in the correct format and is indeed a real date
     public static boolean isValidDate(String dateToValidate) {
         String dateFormat = "dd/MM/yyyy";
