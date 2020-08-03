@@ -9,9 +9,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 /*
  *  Unit tests for the DataAccessor class.
@@ -23,7 +20,7 @@ public class DataAccessorTest {
     Account account;
     ContactList contactList;
     File file;
-    private static final String FILE_PATH = "./data/usrAccountFile.json";
+    private static final String FILE_PATH = "./data/usrAccountTestFile.json";
 
     @BeforeEach
     public void setUp() {

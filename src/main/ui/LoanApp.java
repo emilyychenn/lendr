@@ -10,6 +10,7 @@ import persistence.DataAccessor;
 
 import java.time.format.DateTimeParseException;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 import java.text.SimpleDateFormat;
@@ -247,11 +248,13 @@ public class LoanApp {
 
         try {
             Date date = sdf.parse(dateToValidate); // will throw ParseException if invalid
-//            Date latestDate = Calendar.set(200, 11, 31);
-            Date latestDate = new Date(2100, Calendar.DECEMBER, 31);
-//            Date earliestDate = new Date(2000, Calendar.JANUARY, 1);
-            if (date.after(latestDate)) {
-//            if (date.after(latestDate) | date.before(earliestDate)) {
+            Calendar latestDate = new GregorianCalendar();
+            latestDate.set(2100, Calendar.DECEMBER, 31);
+
+            Calendar earliestDate = new GregorianCalendar();
+            earliestDate.set(1900, Calendar.JANUARY, 1);
+
+            if (date.after(latestDate.getTime()) || date.before(earliestDate.getTime())) {
                 throw new InvalidDateException(dateToValidate, ERROR_MSG);
             }
             System.out.println(dateToValidate + " is a valid date.");
