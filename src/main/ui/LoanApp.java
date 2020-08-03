@@ -119,7 +119,7 @@ public class LoanApp {
     private void displayMenu() {
         System.out.println("\nSelect from:");
         System.out.println("\tc -> create a new contact");
-        System.out.println("\ta -> add a transaction"); // TODO: add a description field for transaction? or some way to tag as a loan and repayment?
+        System.out.println("\ta -> add a transaction");
         System.out.println("\te -> edit the details of a transaction");
         System.out.println("\tv -> view contact list");
         System.out.println("\tt -> view transaction history");
@@ -318,6 +318,7 @@ public class LoanApp {
         }
     }
 
+    // EFFECTS: displays options to edit a transaction
     private void displayTransactionEditMenu() {
         System.out.println("\nWhich field would you like to edit:");
         System.out.println("\ta -> amount");
@@ -444,7 +445,8 @@ public class LoanApp {
             }
 
             System.out.println("Transaction history with " + contactName + ": ");
-            TransactionHistory selectedTransactions = myAccount.getTransactionHistory().getTransactionsByContactName(contactName);
+            TransactionHistory selectedTransactions =
+                    myAccount.getTransactionHistory().getTransactionsByContactName(contactName);
             System.out.println(selectedTransactions.printTransactionHistory());
         }
     }
