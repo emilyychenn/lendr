@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /*
  *  Unit tests for the DataAccessor class.
@@ -48,6 +51,24 @@ public class DataAccessorTest {
         });
 
         assertNull(dataAccessor.readFromFile("./data/test"));
+    }
+
+    @Test
+    public void testReadFromInvalidFile() {
+        Account testAccount = dataAccessor.readFromFile("./data/errorTestFile.json");
+
+        assertThrows(NullPointerException.class, () -> {
+            testAccount.getName();
+        });
+
+        assertThrows(NullPointerException.class, () -> {
+            testAccount.getTransactionHistory();
+        });
+
+        assertThrows(NullPointerException.class, () -> {
+            testAccount.getContactList();
+        });
+
     }
 
     @Test
