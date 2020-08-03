@@ -25,6 +25,7 @@ public class LoanApp {
     String contactName;
     private static final String ERROR_MSG = " is an invalid date. Date must be in format DD/MM/YYYY with a date "
                                              + "between Jan 1, 1900 and Dec 31, 2100.";
+    private static final String FILE_PATH = "./data/usrAccountFile.json";
 
     // EFFECT: runs the money loaning application
     public LoanApp() {
@@ -39,11 +40,11 @@ public class LoanApp {
         String command;
         input = new Scanner(System.in);
 
-        if (dataAccessor.readFromFile() != (null)) {
+        if (dataAccessor.readFromFile(FILE_PATH) != null) {
             System.out.println("Would you like to reload your data? Enter 'Y' or 'N' for yes/no: ");
             String userInput = input.nextLine();
             if (userInput.equalsIgnoreCase("Y")) {
-                myAccount = dataAccessor.readFromFile();
+                myAccount = dataAccessor.readFromFile(FILE_PATH);
                 user = myAccount.getName();
             } else if (userInput.equalsIgnoreCase("N")) {
                 System.out.println("Enter your name: ");
@@ -86,7 +87,7 @@ public class LoanApp {
         while (continueAsking) {
             countTimesAsked++;
             if (input.nextLine().equalsIgnoreCase("Y") | countTimesAsked == 3) {
-                dataAccessor.saveToFile(myAccount);
+                dataAccessor.saveToFile(FILE_PATH, myAccount);
                 continueAsking = false;
             } else if (input.nextLine().equalsIgnoreCase("N")) {
                 continueAsking = false;
