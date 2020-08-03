@@ -9,6 +9,10 @@ public class Contact {
     private double contactBalance; // positive if they owe me, negative if I owe them
 //    private TransactionHistory transactionHistory = new TransactionHistory();
 
+    // EFFECTS: creates a default constructor for JSON reader
+    public Contact() {
+    }
+
     // EFFECTS: constructs a contact with given name and default values of $0 owed, an empty loanList and an empty
     //          payment history
     public Contact(String name) {
@@ -22,10 +26,20 @@ public class Contact {
         return this.name;
     }
 
+    // EFFECTS: sets name of contact
+    public void setName(String name) {
+        this.name = name;
+    }
+
     // EFFECTS: returns total amount owed to/from contact: value is positive if they owe the user and negative if the
     //          user owes them
     public double getContactBalance() {
         return this.contactBalance;
+    }
+
+    // EFFECTS: sets contact's balance: value is positive if they owe the user and negative if the user owes them
+    public void setContactBalance(double amount) {
+        this.contactBalance = amount;
     }
 
     // MODIFIES: contactBalance

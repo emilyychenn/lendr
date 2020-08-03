@@ -13,6 +13,10 @@ public class Transaction {
     private String dateOfTransaction;
     private String transactionID;
 
+    // EFFECTS: constructs a default constructor
+    public Transaction() {
+    }
+
     // EFFECTS: creates a new transaction
     public Transaction(double amount, Contact contact, String date) {
         this.amount = amount;
@@ -59,5 +63,10 @@ public class Transaction {
     // EFFECTS: returns unique transaction ID
     public String getTransactionID() {
         return transactionID;
+    }
+
+    // EFFECTS: sets transaction ID for reading from JSON file
+    public void setTransactionID(String transactionID) {
+        this.transactionID = transactionID;
     }
 }

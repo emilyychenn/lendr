@@ -14,6 +14,10 @@ public class Account {
     private ContactList contactList;
     private TransactionHistory transactionHistory;
 
+    // EFFECTS: constructs a default constructor
+    public Account() {
+    }
+
     // MODIFIES: this
     // EFFECTS: constructs a new account with 0 balance and an empty contact list
     public Account(String name) {
@@ -26,6 +30,11 @@ public class Account {
     // EFFECTS: return's account owner's (user's) name
     public String getName() {
         return this.name;
+    }
+
+    // EFFECTS: return's account owner's (user's) name
+    public void setName(String name) {
+        this.name = name;
     }
 
     // EFFECTS: returns contact list

@@ -32,13 +32,17 @@ public class DataAccessor {
         }
     }
 
-//    public boolean readFromFile() {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//
-//        File file = new File("data/car.json");
-//
-//        Car car = objectMapper.readValue(file, Car.class);
-//    }
+    public Account readFromFile() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            File file = new File("data/usrAccountFile.json");
+            Account account = objectMapper.readValue(file, Account.class);
+            return account;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
 

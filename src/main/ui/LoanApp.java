@@ -21,8 +21,8 @@ public class LoanApp {
     private Scanner input;
     private DataAccessor dataAccessor = new DataAccessor();
     Account myAccount;
-    ContactList contactList;
-    TransactionHistory transactionHistory;
+//    ContactList contactList;
+//    TransactionHistory transactionHistory;
     String user;
     String contactName;
     private static final String ERROR_MSG = " is an invalid date. Date must be in format DD/MM/YYYY with a date "
@@ -41,9 +41,28 @@ public class LoanApp {
         String command;
         input = new Scanner(System.in);
 
-        System.out.println("Enter your name: ");
-        user = input.nextLine();
-        init(user);
+        if (dataAccessor.readFromFile() != (null)) {
+            System.out.println("Would you like to reload your data? Enter 'Y' or 'N' for yes/no: ");
+            String userInput = input.nextLine();
+            if (userInput.equalsIgnoreCase("Y")) {
+                myAccount = dataAccessor.readFromFile();
+                user = myAccount.getName();
+                dataAccessor.saveToFile(myAccount);
+            } else if (userInput.equalsIgnoreCase("N")) {
+                System.out.println("Enter your name: ");
+                user = input.nextLine();
+                init(user);
+            } else {
+                System.out.println("Invalid selection. Will load program without your data. If you wish to load"
+                        + " your data, quit the program without saving and select 'Y' next time.");
+            }
+        } else {
+            System.out.println("No file to load from.");
+            System.out.println("Enter your name: ");
+            user = input.nextLine();
+            init(user);
+        }
+
         System.out.println("Hello, " + user + ".");
 
         while (keepGoing) {
@@ -86,9 +105,10 @@ public class LoanApp {
     // EFFECTS: initializes user's account and contact list
     private void init(String name) {
         myAccount = new Account(name);
-        contactList = new ContactList();
+        ContactList contactList = new ContactList();
         myAccount.setContactList(contactList);
-        transactionHistory = new TransactionHistory();
+        TransactionHistory transactionHistory = new TransactionHistory();
+        myAccount.setTransactionHistory(transactionHistory);
     }
 
     // EFFECTS: displays menu of options to user
@@ -126,11 +146,11 @@ public class LoanApp {
         System.out.println("Contact's name: ");
         contactName = input.nextLine();
 
-        if (contactList.containsByName(contactName)) {
+        if (myAccount.getContactList().containsByName(contactName)) {
             System.out.println(contactName + " already exists as a contact. Please enter a different name.");
         } else {
             Contact newContact = new Contact(contactName);
-            contactList.addContactToList(newContact);
+            myAccount.getContactList().addContactToList(newContact);
             System.out.println("Contact " + contactName + " added to contact list.");
         }
     }
@@ -146,7 +166,7 @@ public class LoanApp {
         } else {
             System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
             String contactName = input.nextLine();
-            Contact selectedContact = contactList.getContactByName(contactName);
+            Contact selectedContact = myAccount.getContactList().getContactByName(contactName);
 
             if (selectedContact == null) {
                 foundNoContactForTransaction(contactName);
@@ -189,7 +209,7 @@ public class LoanApp {
         String date = input.nextLine();
         if (isValidDate(date)) {
             selectedContact.addAmountToBalance(amount);
-            transactionHistory.addTransaction(new Transaction(amount, selectedContact, date));
+            myAccount.getTransactionHistory().addTransaction(new Transaction(amount, selectedContact, date));
             printBalance(selectedContact);
             return date;
         } else {
@@ -315,7 +335,7 @@ public class LoanApp {
         System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
         String contactName = input.nextLine();
 
-        chosenContact = contactList.getContactByName(contactName);
+        chosenContact = myAccount.getContactList().getContactByName(contactName);
 
         if (chosenContact.equals(null)) {
             foundNoContact(contactName);
@@ -334,13 +354,13 @@ public class LoanApp {
         TransactionHistory th;
         System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
         String contactName = input.nextLine();
-        selectedContact = contactList.getContactByName(contactName);
+        selectedContact = myAccount.getContactList().getContactByName(contactName);
 
         if (selectedContact == null) {
             foundNoContact(contactName);
             return null;
         }
-        th = transactionHistory.getTransactionsByContactName(contactName);
+        th = myAccount.getTransactionHistory().getTransactionsByContactName(contactName);
         System.out.println("Transaction History with " + contactName + ": " + th.printTransactionHistory(th));
         return th;
     }
@@ -362,11 +382,11 @@ public class LoanApp {
     //          negative for amount owed to the user's contact
     public void viewContactList() {
         System.out.println("Contacts (positive for amount owed to you and negative for amount you owe): ");
-        if (contactList.getNumContacts() == 0) {
+        if (myAccount.getContactList().countNumContacts() == 0) {
             System.out.println("No contacts to show.");
         } else {
-            for (int i = 0; i < contactList.getNumContacts(); i++) {
-                Contact contact = contactList.getContactFromIndex(i);
+            for (int i = 0; i < myAccount.getContactList().countNumContacts(); i++) {
+                Contact contact = myAccount.getContactList().getContactFromIndex(i);
                 String contactName = contact.getName();
                 double amountOwed = contact.getContactBalance();
                 System.out.println(contactName + ": $ " + amountOwed + " owed");
@@ -377,11 +397,11 @@ public class LoanApp {
     // EFFECTS: prints only contact's names for easy selection when adding a loan or a payment
     public String viewContactNames() {
         String contactNames = "";
-        if (contactList.getNumContacts() == 0) {
+        if (myAccount.getContactList().countNumContacts() == 0) {
             return "No contacts to show.";
         } else {
-            for (int i = 0; i < contactList.getNumContacts(); i++) {
-                Contact contact = contactList.getContactFromIndex(i);
+            for (int i = 0; i < myAccount.getContactList().countNumContacts(); i++) {
+                Contact contact = myAccount.getContactList().getContactFromIndex(i);
                 contactNames = contactNames.concat("\n" + contact.getName());
             }
             return contactNames;
@@ -399,11 +419,11 @@ public class LoanApp {
             String contactName = input.nextLine();
             if (contactName.equals("f")) { // TODO: add a check to make sure no contacts are named 'f'
                 System.out.println("Full Transaction History: ");
-                System.out.println(transactionHistory.printTransactionHistory(transactionHistory));
+                System.out.println(myAccount.getTransactionHistory().printTransactionHistory(myAccount.getTransactionHistory()));
 //                System.out.println(transactionHistory.getTransactions().toString());
                 return;
             } else {
-                selectedContact = contactList.getContactByName(contactName);
+                selectedContact = myAccount.getContactList().getContactByName(contactName);
             }
 
             if (selectedContact == null) {
@@ -412,7 +432,7 @@ public class LoanApp {
             }
 
             System.out.println("Transaction history with " + contactName + ": ");
-            TransactionHistory selectedTransactions = transactionHistory.getTransactionsByContactName(contactName);
+            TransactionHistory selectedTransactions = myAccount.getTransactionHistory().getTransactionsByContactName(contactName);
             System.out.println(selectedTransactions.printTransactionHistory(selectedTransactions));
         }
     }

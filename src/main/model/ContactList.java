@@ -20,6 +20,11 @@ public class ContactList {
         return contacts;
     }
 
+    // EFFECTS: sets contact data for reading from JSON file
+    public void setContacts(List<Contact> contacts) {
+        this.contacts = contacts;
+    }
+
     // EFFECTS: gets contact corresponding to the given name
     public Contact getContactByName(String name) {
         for (Contact c : contacts) {
@@ -37,7 +42,7 @@ public class ContactList {
     }
 
     // EFFECTS: returns size of list of contacts
-    public int getNumContacts() {
+    public int countNumContacts() {
         return contacts.size();
     }
 

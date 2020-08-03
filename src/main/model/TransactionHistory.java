@@ -20,6 +20,11 @@ public class TransactionHistory {
         return transactions;
     }
 
+    // EFFECTS: sets transaction history for reading from JSON file
+    public void setTransactions(LinkedList<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
     // MODIFIES: this
     // EFFECTS: adds given transaction to the list of transactions (i.e. the transaction history)
     public void addTransaction(Transaction transaction) {

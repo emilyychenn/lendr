@@ -38,9 +38,9 @@ public class ContactListTest {
         Contact contact4 = new Contact("Palm Tree");
         Contact contact5 = new Contact("CPSC-210");
         contactList.addContactToList(contact4);
-        assertEquals(4, contactList.getNumContacts());
+        assertEquals(4, contactList.countNumContacts());
         contactList.addContactToList(contact5);
-        assertEquals(5, contactList.getNumContacts());
+        assertEquals(5, contactList.countNumContacts());
     }
 
     @Test
