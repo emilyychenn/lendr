@@ -7,10 +7,8 @@ import persistence.DataAccessor;
  */
 
 public class Account {
-    // to be implemented later: username, password, currency
+    // to be implemented later: balance, username, password, currency?
     private String name;
-//    private Double balance; // to be implemented later (right now there is no need for this since there is no option
-//                               to view the account's overall balance yet)
     private ContactList contactList;
     private TransactionHistory transactionHistory;
 
@@ -41,21 +39,10 @@ public class Account {
         return this.contactList;
     }
 
-    // EFFECTS: returns account overall balance
-//    public Double getBalance() {
-//        return this.balance;
-//    }
-
     // EFFECTS: returns transaction history
     public TransactionHistory getTransactionHistory() {
         return this.transactionHistory;
     }
-
-    // MODIFIES: this (balance)
-    // EFFECTS: sets balance for account
-//    public void setBalance(double amount) {
-//        this.balance = amount;
-//    }
 
     // MODIFIES: this (contactList)
     // EFFECTS: sets contact list for account

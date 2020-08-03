@@ -431,7 +431,6 @@ public class LoanApp {
             if (contactName.equals("f")) { // TODO: add a check to make sure no contacts are named 'f'
                 System.out.println("Full Transaction History: ");
                 System.out.println(myAccount.getTransactionHistory().printTransactionHistory());
-//                System.out.println(transactionHistory.getTransactions().toString());
                 return;
             } else {
                 selectedContact = myAccount.getContactList().getContactByName(contactName);

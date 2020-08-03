@@ -7,7 +7,6 @@ package model;
 public class Contact {
     private String name;
     private double contactBalance; // positive if they owe me, negative if I owe them
-//    private TransactionHistory transactionHistory = new TransactionHistory();
 
     // EFFECTS: creates a default constructor for JSON reader
     public Contact() {

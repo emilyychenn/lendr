@@ -13,7 +13,6 @@ public class DataAccessor {
 
     // EFFECTS: constructs data accessor
     public DataAccessor() {
-        // TODO: should there be anything in here?
     }
 
     // EFFECTS: saves account information to JSON file
@@ -29,6 +28,7 @@ public class DataAccessor {
         }
     }
 
+    // EFFECTS: loads information from file if it exists
     public Account readFromFile(String filePath) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -36,12 +36,8 @@ public class DataAccessor {
             Account account = objectMapper.readValue(file, Account.class);
             return account;
         } catch (IOException e) {
-//            e.printStackTrace();
-//            System.err.println(e.getMessage());
             return null;
         }
     }
-
-
 
 }

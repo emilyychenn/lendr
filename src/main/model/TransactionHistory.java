@@ -77,8 +77,9 @@ public class TransactionHistory {
         } else {
             for (int i = 0; i < transactions.size(); i++) {
                 Transaction t = transactions.get(i);
-                printedTransactions = printedTransactions.concat("\nTransaction ID: " + t.getTransactionID() + ", Contact: "
-                        + t.getContact().getName() + ", Amount: $" + t.getAmount() + ", Date: " + t.getDateOfTransaction());
+                printedTransactions = printedTransactions.concat("\nTransaction ID: " + t.getTransactionID()
+                        + ", Contact: " + t.getContact().getName() + ", Amount: $" + t.getAmount() + ", Date: "
+                        + t.getDateOfTransaction());
             }
             return printedTransactions;
         }
