@@ -1,7 +1,11 @@
 package ui;
 
 import exceptions.InvalidDateException;
-import model.*;
+import model.Account;
+import model.Contact;
+import model.ContactList;
+import model.Transaction;
+import model.TransactionHistory;
 import persistence.DataAccessor;
 
 import java.time.format.DateTimeParseException;
@@ -39,7 +43,26 @@ public class LoanApp {
         boolean keepGoing = true;
         String command;
         input = new Scanner(System.in);
+        reloadSavedData();
+        System.out.println("Hello, " + user + ".");
 
+        while (keepGoing) {
+            displayMenu();
+            command = input.nextLine();
+            command = command.toLowerCase();
+
+            if (command.equals("q")) {
+                keepGoing = false;
+            } else {
+                processCommand(command);
+            }
+        }
+        saveData();
+    }
+
+    // MODIFIES: myAccount
+    // EFFECTS: reloads saved data if user wants to and saved data exists, otherwise creates a new account
+    private void reloadSavedData() {
         if (dataAccessor.readFromFile(FILE_PATH) != null) {
             System.out.println("Would you like to reload your data? Enter 'Y' or 'N' for yes/no: ");
             String userInput = input.nextLine();
@@ -60,21 +83,6 @@ public class LoanApp {
             user = input.nextLine();
             init(user);
         }
-
-        System.out.println("Hello, " + user + ".");
-
-        while (keepGoing) {
-            displayMenu();
-            command = input.nextLine();
-            command = command.toLowerCase();
-
-            if (command.equals("q")) {
-                keepGoing = false;
-            } else {
-                processCommand(command);
-            }
-        }
-        saveData();
     }
 
 
