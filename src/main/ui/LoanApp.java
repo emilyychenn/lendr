@@ -279,7 +279,10 @@ public class LoanApp {
                 if (chosenContact.equals(null)) {
                     foundNoContact(contactName);
                 } else {
+                    Contact originalContact = toBeEdited.getContact();
+                    originalContact.removeTransactionFromHistory(toBeEdited);
                     toBeEdited.setContact(chosenContact);
+                    chosenContact.addTransactionToHistory(toBeEdited);
                 }
                 System.out.println("Contact changed to: " + toBeEdited.getContact().getName());
                 return;
@@ -304,9 +307,9 @@ public class LoanApp {
         double amountOwed = contact.getTotalAmountOwed();
 
         if (amountOwed < 0) {
-            System.out.println("You owe $" + amountOwed + " to " + contact.getName());
+            System.out.println(contact.getName() + " paid you $" + Math.abs(amountOwed));
         } else if (amountOwed > 0) {
-            System.out.println(contact.getName() + " owes you $" + amountOwed);
+            System.out.println("You paid $" + Math.abs(amountOwed) + " to " + contact.getName());
         } else {
             System.out.println("Congratulations! You owe each other nothing.");
         }
@@ -315,6 +318,7 @@ public class LoanApp {
     // EFFECTS: prints full contact list and amount owed to/from each contact, positive for amount owed to user and
     //          negative for amount owed to the user's contact
     public void viewContactList() {
+        System.out.println("Contacts (positive for amount owed to you and negative for amount you owe): ");
         if (contactList.getNumContacts() == 0) {
             System.out.println("No contacts to show.");
         } else {
@@ -378,11 +382,11 @@ public class LoanApp {
     }
 
 
-    // EFFECTS: initializes a new transaction and adds it to the contact's transaction history
-    public void initNewTransaction(Contact selectedContact, double amount, String date) {
-        Transaction newTransaction = new Transaction(amount, selectedContact, date);
-        selectedContact.addTransactionToAmountOwed(amount);
-        selectedContact.addTransactionToHistory(newTransaction);
-    }
+//    // EFFECTS: initializes a new transaction and adds it to the contact's transaction history
+//    public void initNewTransaction(Contact selectedContact, double amount, String date) {
+//        Transaction newTransaction = new Transaction(amount, selectedContact, date);
+//        selectedContact.addTransactionToAmountOwed(amount);
+//        selectedContact.addTransactionToHistory(newTransaction);
+//    }
 
 }

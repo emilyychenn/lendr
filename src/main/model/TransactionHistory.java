@@ -21,6 +21,12 @@ public class TransactionHistory {
     }
 
     // MODIFIES: this
+    // EFFECTS: removes a given transaction from the list of transactions (i.e. the transaction history)
+    public void removeTransaction(Transaction transaction) {
+        transactions.remove(transaction);
+    }
+
+    // MODIFIES: this
     // EFFECTS: creates a transaction list that displays transactions for a given contact
     public TransactionHistory getTransactionsByContactName(String contactName) {
         TransactionHistory transactionsList = new TransactionHistory();

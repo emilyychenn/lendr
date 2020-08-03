@@ -45,6 +45,13 @@ public class Contact {
     // EFFECTS: adds a transaction to the transaction history
     public void addTransactionToHistory(Transaction transaction) {
         transactionHistory.addTransaction(transaction);
+        totalAmountOwed = totalAmountOwed - transaction.getAmount();
+    }
+
+    // REQUIRES: transaction is already in transaction history
+    public void removeTransactionFromHistory(Transaction transaction) {
+        transactionHistory.removeTransaction(transaction);
+        totalAmountOwed = totalAmountOwed + transaction.getAmount();
     }
 
     // MODIFIES: this
