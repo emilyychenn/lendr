@@ -94,10 +94,11 @@ public class LoanApp {
         System.out.println("Would you like to save your data? Enter 'Y' or 'N' for yes/no: ");
         while (continueAsking) {
             countTimesAsked++;
-            if (input.nextLine().equalsIgnoreCase("Y") | countTimesAsked == 3) {
+            String userInput = input.nextLine().trim();
+            if (userInput.equalsIgnoreCase("Y") | countTimesAsked == 3) {
                 dataAccessor.saveToFile(FILE_PATH, myAccount);
                 continueAsking = false;
-            } else if (input.nextLine().equalsIgnoreCase("N")) {
+            } else if (userInput.equalsIgnoreCase("N")) {
                 continueAsking = false;
             } else {
                 System.out.println("Invalid response. Enter 'Y' or 'N' for yes/no.");
@@ -177,7 +178,7 @@ public class LoanApp {
             try {
                 amount = Double.parseDouble(input.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Invalid amount. (Negative numbers must be in form $-XXX).");
+                System.out.println("Invalid amount. (Negative numbers must be in form -XXX).");
                 return;
             }
 
@@ -331,9 +332,15 @@ public class LoanApp {
         System.out.println("This transaction was originally: $" + toBeEdited.getAmount());
         System.out.println("Enter new amount of transaction (positive for amount paid to you, "
                 + "negative for amount you paid)");
-        double userAmount = Double.parseDouble(input.nextLine()); // todo: Catch exception if not double!!
-        toBeEdited.setAmount(userAmount);
-        System.out.println("Amount changed to: $" + toBeEdited.getAmount());
+        double userAmount;
+        try {
+            userAmount = Double.parseDouble(input.nextLine());
+            toBeEdited.setAmount(userAmount);
+            System.out.println("Amount changed to: $" + toBeEdited.getAmount());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid amount. (Negative numbers must be in form -XXX).");
+            return;
+        }
     }
 
     // MODIFIES: contact assigned to transaction
