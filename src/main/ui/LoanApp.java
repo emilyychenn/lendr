@@ -19,13 +19,13 @@ import java.text.ParseException;
 public class LoanApp {
     private Scanner input;
     private DataAccessor dataAccessor = new DataAccessor();
-    Account newAccount;
+    Account myAccount;
     ContactList contactList;
     TransactionHistory transactionHistory;
     String user;
     String contactName;
-    private static final String ERROR_MSG = " is an invalid date. Please re-select contact and re-enter date in format"
-                                            + " DD/MM/YYYY with a date on or before Dec 31, 2100.";
+    private static final String ERROR_MSG = " is an invalid date. Date must be in format DD/MM/YYYY with a date "
+                                             + "between Jan 1, 1900 and Dec 31, 2100.";
 
     // EFFECT: runs the money loaning application
     public LoanApp() {
@@ -69,7 +69,7 @@ public class LoanApp {
         while (continueAsking) {
             countTimesAsked++;
             if (input.nextLine().equalsIgnoreCase("Y") | countTimesAsked == 3) {
-                dataAccessor.saveToFile(newAccount);
+                dataAccessor.saveToFile(myAccount);
                 continueAsking = false;
             } else if (input.nextLine().equalsIgnoreCase("N")) {
                 continueAsking = false;
@@ -84,9 +84,9 @@ public class LoanApp {
     // MODIFIES: this
     // EFFECTS: initializes user's account and contact list
     private void init(String name) {
-        newAccount = new Account(name);
+        myAccount = new Account(name);
         contactList = new ContactList();
-        newAccount.setContactList(contactList);
+        myAccount.setContactList(contactList);
         transactionHistory = new TransactionHistory();
     }
 
@@ -162,8 +162,14 @@ public class LoanApp {
                 return;
             }
 
-            String date = promptUserForDate(selectedContact, amount);
-            // TODO: catch invalid date exception here
+            String date = "";
+            try {
+                date = promptUserForDate(selectedContact, amount);
+            } catch (InvalidDateException e) {
+                addNewTransaction();
+                return;
+            }
+
             Transaction newTransaction = new Transaction(amount, selectedContact, date);
             transactionHistory.addTransaction(newTransaction);
         }
@@ -179,16 +185,16 @@ public class LoanApp {
     }
 
     // EFFECTS: prompts user for a date and checks that the given date is valid
-    private String promptUserForDate(Contact selectedContact, double amount) {
+    private String promptUserForDate(Contact selectedContact, double amount) throws InvalidDateException {
         System.out.println("Enter date of transaction (DD/MM/YYYY): ");
         String date = input.nextLine();
         if (isValidDate(date)) {
-            selectedContact.addTransaction(amount, date);
+            selectedContact.addAmountToBalance(amount);
+            transactionHistory.addTransaction(new Transaction(amount, selectedContact, date));
             printBalance(selectedContact);
             return date;
         } else {
-            addNewTransaction();
-            return null; // TODO: change this to throw an invalid date exception!!! and then catch the exception above
+            throw new InvalidDateException(date, "Invalid date.");
         }
     }
 
@@ -208,7 +214,8 @@ public class LoanApp {
         try {
             Date date = sdf.parse(dateToValidate); // will throw ParseException if invalid
             Date latestDate = new Date(2100, 12, 31);
-            if (date.after(latestDate)) {
+            Date earliestDate = new Date(1900, 1, 1);
+            if (date.after(latestDate) | date.before(earliestDate)) {
                 throw new InvalidDateException(dateToValidate, ERROR_MSG);
             }
             System.out.println(dateToValidate + " is a valid date.");
@@ -229,16 +236,10 @@ public class LoanApp {
         if (viewContactNames().equals("No contacts to show.")) {
             System.out.println("\nNo contacts to show.");
         } else {
-            System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
-            String contactName = input.nextLine();
-            selectedContact = contactList.getContactByName(contactName);
-
-            if (selectedContact == null) {
-                foundNoContact(contactName);
+            th = getTransactionHistoryFromContact();
+            if (th == null) {
                 return;
             }
-            th = transactionHistory.getTransactionsByContactName(contactName);
-            System.out.println("Transaction History with " + contactName + ": " + th.printTransactionHistory(th));
         }
 
         if (th.equals("No transactions to show.")) {
@@ -251,61 +252,100 @@ public class LoanApp {
         if (toBeEdited.equals(null)) {
             System.out.println("Invalid transaction ID.");
         } else {
-            System.out.println("\nWhich field would you like to edit:");
-            System.out.println("\ta -> amount");
-            System.out.println("\tc -> contact");
-            System.out.println("\td -> date of transaction");
-            System.out.println("\tr -> return to main menu");
-
-            String command = input.nextLine();
-            Contact chosenContact = new Contact("Unnamed");
-
-            if (command.equals("a")) {
-                System.out.println("This transaction was originally: $" + toBeEdited.getAmount());
-                System.out.println("Enter new amount of transaction (positive for amount paid to you, "
-                        + "negative for amount you paid");
-                Double userAmount = Double.parseDouble(input.nextLine()); // todo: Catch exception if not double!!
-                toBeEdited.setAmount(userAmount);
-                System.out.println("Amount changed to: $" + toBeEdited.getAmount());
-                return;
-            } else if (command.equals("c")) {
-                System.out.println("This transaction is assigned to: " + toBeEdited.getContact().getName());
-                System.out.print("\nSelect a contact to assign this transaction to:" + viewContactNames());
-
-                System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
-                String contactName = input.nextLine();
-
-                chosenContact = contactList.getContactByName(contactName);
-
-                if (chosenContact.equals(null)) {
-                    foundNoContact(contactName);
-                } else {
-                    Contact originalContact = toBeEdited.getContact();
-                    originalContact.removeTransactionFromHistory(toBeEdited);
-                    toBeEdited.setContact(chosenContact);
-                    chosenContact.addTransactionToHistory(toBeEdited);
-                }
-                System.out.println("Contact changed to: " + toBeEdited.getContact().getName());
-                return;
-            } else if (command.equals("d")) {
-                String dateChosen = promptUserForDate(chosenContact, toBeEdited.getAmount());
-                if (dateChosen.equals(null)) {
-                    return;
-                } else {
-                    toBeEdited.setDateOfTransaction(dateChosen);
-                    System.out.println("Date changed to: " + toBeEdited.getDateOfTransaction());
-                }
-            } else if (command.equals("r")) {
-                return;
-            } else {
-                System.out.println("Invalid field."); // TODO: re-display menu above!
-            }
+            editTransactionField(toBeEdited);
         }
+    }
+
+    // MODIFIES: transaction
+    // EFFECTS: allows user to select a field to edit
+    private void editTransactionField(Transaction toBeEdited) {
+        displayTransactionEditMenu();
+
+        String command = input.nextLine();
+        Contact chosenContact = new Contact("Unnamed");
+
+        if (command.equals("a")) {
+            editAmount(toBeEdited);
+        } else if (command.equals("c")) {
+            assignNewContact(toBeEdited);
+        } else if (command.equals("d")) {
+            String dateChosen = "";
+            try {
+                dateChosen = promptUserForDate(chosenContact, toBeEdited.getAmount());
+            } catch (InvalidDateException e) {
+                return;
+            }
+            toBeEdited.setDateOfTransaction(dateChosen);
+            System.out.println("Date changed to: " + toBeEdited.getDateOfTransaction());
+        } else if (command.equals("r")) {
+            return;
+        } else {
+            System.out.println("Invalid field.");
+        }
+    }
+
+    private void displayTransactionEditMenu() {
+        System.out.println("\nWhich field would you like to edit:");
+        System.out.println("\ta -> amount");
+        System.out.println("\tc -> contact");
+        System.out.println("\td -> date of transaction");
+        System.out.println("\tr -> return to main menu");
+    }
+
+    // MODIFIES: amount of transaction
+    // EFFECT: changes amount of transaction to given amount
+    private void editAmount(Transaction toBeEdited) {
+        System.out.println("This transaction was originally: $" + toBeEdited.getAmount());
+        System.out.println("Enter new amount of transaction (positive for amount paid to you, "
+                + "negative for amount you paid");
+        Double userAmount = Double.parseDouble(input.nextLine()); // todo: Catch exception if not double!!
+        toBeEdited.setAmount(userAmount);
+        System.out.println("Amount changed to: $" + toBeEdited.getAmount());
+    }
+
+    // MODIFIES: contact assigned to transaction
+    // EFFECT: assigns transaction to a new contact
+    private void assignNewContact(Transaction toBeEdited) {
+        Contact chosenContact;
+        System.out.println("This transaction is assigned to: " + toBeEdited.getContact().getName());
+        System.out.print("\nSelect a contact to assign this transaction to:" + viewContactNames());
+
+        System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
+        String contactName = input.nextLine();
+
+        chosenContact = contactList.getContactByName(contactName);
+
+        if (chosenContact.equals(null)) {
+            foundNoContact(contactName);
+        } else {
+            Contact originalContact = toBeEdited.getContact();
+            originalContact.removeAmountFromBalance(toBeEdited.getAmount());
+            toBeEdited.setContact(chosenContact);
+            chosenContact.addAmountToBalance(toBeEdited.getAmount());
+        }
+        System.out.println("Contact changed to: " + toBeEdited.getContact().getName());
+    }
+
+    // EFFECTS: returns a transaction history for the selected contact
+    private TransactionHistory getTransactionHistoryFromContact() {
+        Contact selectedContact;
+        TransactionHistory th;
+        System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
+        String contactName = input.nextLine();
+        selectedContact = contactList.getContactByName(contactName);
+
+        if (selectedContact == null) {
+            foundNoContact(contactName);
+            return null;
+        }
+        th = transactionHistory.getTransactionsByContactName(contactName);
+        System.out.println("Transaction History with " + contactName + ": " + th.printTransactionHistory(th));
+        return th;
     }
 
     // EFFECTS: prints balance owed to a specific contact
     public void printBalance(Contact contact) {
-        double amountOwed = contact.getTotalAmountOwed();
+        double amountOwed = contact.getContactBalance();
 
         if (amountOwed < 0) {
             System.out.println(contact.getName() + " paid you $" + Math.abs(amountOwed));
@@ -326,7 +366,7 @@ public class LoanApp {
             for (int i = 0; i < contactList.getNumContacts(); i++) {
                 Contact contact = contactList.getContactFromIndex(i);
                 String contactName = contact.getName();
-                double amountOwed = contact.getTotalAmountOwed();
+                double amountOwed = contact.getContactBalance();
                 System.out.println(contactName + ": $ " + amountOwed + " owed");
             }
         }
@@ -357,7 +397,8 @@ public class LoanApp {
             String contactName = input.nextLine();
             if (contactName.equals("f")) { // TODO: add a check to make sure no contacts are named 'f'
                 System.out.println("Full Transaction History: ");
-                System.out.println(transactionHistory.getTransactions().toString());
+                System.out.println(transactionHistory.printTransactionHistory(transactionHistory));
+//                System.out.println(transactionHistory.getTransactions().toString());
                 return;
             } else {
                 selectedContact = contactList.getContactByName(contactName);
@@ -382,6 +423,6 @@ public class LoanApp {
             viewTransactionHistory();
         }
     }
-    
+
 
 }

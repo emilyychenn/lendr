@@ -2,6 +2,10 @@ package model;
 
 import java.util.LinkedList;
 
+/**
+ *  Represents the a list of transactions.
+ */
+
 // LIST OF ALL USER'S TRANSACTIONS (not sorted by contact!!)
 public class TransactionHistory {
     LinkedList<Transaction> transactions;

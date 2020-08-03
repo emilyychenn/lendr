@@ -2,9 +2,13 @@ package model;
 
 import java.util.UUID;
 
-// TODO: combine Loan and Payment classes into this one transaction class!! Note: need contact as a field
+/**
+ *  Represents a transaction with a contact including the amount, date of transaction, and an auto-generated unique
+ *  transaction ID.
+ */
+
 public class Transaction {
-    private double amount;
+    private double amount; // positive amount for amount paid to you, negative for amount you paid to someone else
     private Contact contact;
     private String dateOfTransaction;
     private String transactionID;

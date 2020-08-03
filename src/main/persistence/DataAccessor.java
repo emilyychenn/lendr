@@ -11,10 +11,10 @@ import java.io.IOException;
 public class DataAccessor {
     ObjectMapper objectMapper = new ObjectMapper();
 
-    // TODO: should there be anything in here?
+
     // EFFECTS: constructs data accessor
     public DataAccessor() {
-
+        // TODO: should there be anything in here?
     }
 
     // EFFECTS: saves account information to JSON file
