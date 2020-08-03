@@ -14,7 +14,7 @@ public class Contact {
     //          payment history
     public Contact(String name) {
         this.name = name;
-        this.totalAmountOwed = 0.00;
+        this.totalAmountOwed = 0.00; // positive if they owe me, negative if I owe them
         this.loanList = new LoanList();
         this.paymentHistory = new PaymentHistory(this);
     }

@@ -20,6 +20,11 @@ public class LoanList {
         return loans.size();
     }
 
+    // EFFECTS: gets loan data for writing to JSON file
+    public List<Loan> getLoans() {
+        return loans;
+    }
+
     // MODIFIES: this
     // EFFECTS: adds given payment to the list of payments (i.e. the payment history)
     public void addLoanToList(Loan loan) {

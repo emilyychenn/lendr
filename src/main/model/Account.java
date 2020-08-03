@@ -1,5 +1,7 @@
 package model;
 
+import persistence.DataAccessor;
+
 /**
  *  Represents the user's account.
  */
@@ -32,4 +34,15 @@ public class Account {
     public Double getBalance() {
         return this.balance;
     }
+
+    // EFFECTS: sets balance for account
+    public void setBalance(double amount) {
+        this.balance = amount;
+    }
+
+    // EFFECTS: sets contact list for account
+    public void setContactList(ContactList contactList) {
+        this.contactList = contactList;
+    }
+
 }

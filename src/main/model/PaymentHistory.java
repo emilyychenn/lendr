@@ -16,6 +16,11 @@ public class PaymentHistory {
         this.payments = new LinkedList<>();
     }
 
+    // EFFECTS: gets payment data for writing to JSON file
+    public LinkedList<Payment> getPayments() {
+        return payments;
+    }
+
     // MODIFIES: this
     // EFFECTS: adds given payment to the list of payments (i.e. the payment history)
     public void addPaymentToHistory(Payment payment) {

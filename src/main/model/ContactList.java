@@ -15,6 +15,11 @@ public class ContactList {
         contacts = new ArrayList<>();
     }
 
+    // EFFECTS: gets contact data for writing to JSON file
+    public List<Contact> getContacts() {
+        return contacts;
+    }
+
     // EFFECTS: gets contact corresponding to the given name
     public Contact getContactByName(String name) {
         for (Contact c : contacts) {

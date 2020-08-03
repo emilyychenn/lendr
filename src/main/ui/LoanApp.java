@@ -2,6 +2,7 @@ package ui;
 
 import exceptions.InvalidDateException;
 import model.*;
+import persistence.DataAccessor;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -18,8 +19,10 @@ import java.text.ParseException;
 
 public class LoanApp {
     private Scanner input;
+    private DataAccessor dataAccessor = new DataAccessor();
     Account newAccount;
     ContactList contactList;
+    TransactionHistory transactionHistory;
     String user;
     String contactName;
     private static final String ERROR_MSG = " is an invalid date. Please re-select contact and re-enter date in format"
@@ -54,15 +57,38 @@ public class LoanApp {
                 processCommand(command);
             }
         }
+        saveData();
+    }
 
+
+    // EFFECTS: asks user if they wish to save their info, automatically saves if they still don't have a valid
+    //          response after 3 rounds of prompting
+    private void saveData() {
+        boolean continueAsking = true;
+        int countTimesAsked = 0;
+        System.out.println("Would you like to save your data? Enter 'Y' or 'N' for yes/no: ");
+        while (continueAsking) {
+            countTimesAsked++;
+            if (input.nextLine().equalsIgnoreCase("Y") | countTimesAsked == 3) {
+                dataAccessor.saveToFile(newAccount);
+                continueAsking = false;
+            } else if (input.nextLine().equalsIgnoreCase("N")) {
+                continueAsking = false;
+            } else {
+                System.out.println("Invalid response. Enter 'Y' or 'N' for yes/no.");
+            }
+        }
         System.out.println("\nGoodbye!");
     }
+
 
     // MODIFIES: this
     // EFFECTS: initializes user's account and contact list
     private void init(String name) {
         newAccount = new Account(name);
         contactList = new ContactList();
+        newAccount.setContactList(contactList);
+        transactionHistory = new TransactionHistory();
     }
 
     // EFFECTS: displays menu of options to user
