@@ -20,9 +20,7 @@ public class DataAccessor {
     // EFFECTS: saves account information to JSON file
     public boolean saveToFile(Account account) {
         try {
-            System.out.println("enter save to file");
             FileOutputStream filePath = new FileOutputStream("./data/usrAccountFile.json");
-            System.out.println("about to save");
             objectMapper.writeValue(filePath, account);
             System.out.println("Saved to: " + filePath.toString());
             return true;

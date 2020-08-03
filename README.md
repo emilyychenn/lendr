@@ -9,8 +9,8 @@ This program would ideally be used by individuals or groups of friends/colleague
 
 As a typical user, I want to be able to:
 - add a new contact to whom I owe money or who owes me money, to my list of contacts
-- add new loan(s) to an existing contact, and include details such as the date and amount owed
-- add payment(s) when part or all of a loan has been paid
+- add new transaction(s) to an existing contact, and include details such as the date and amount owed
 - view a list of the people (my contacts) and their overall owed balance
+- view a list of transactions for a selected contact
 - when I select the quit option, have the option to save my list of contacts (and overall owed balances) to a file
-- optionally load my contact list from a file when the program starts
+- optionally load my account data from a file when the program starts

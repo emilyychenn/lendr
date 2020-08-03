@@ -70,13 +70,13 @@ public class TransactionHistory {
     }
 
     // EFFECTS: prints transactions in given transaction history
-    public String printTransactionHistory(TransactionHistory th) {
+    public String printTransactionHistory() {
         String printedTransactions = "";
-        if (th.size() == 0) {
+        if (transactions.size() == 0) {
             return "No transactions to show.";
         } else {
-            for (int i = 0; i < th.size(); i++) {
-                Transaction t = th.getFromIndex(i);
+            for (int i = 0; i < transactions.size(); i++) {
+                Transaction t = transactions.get(i);
                 printedTransactions = printedTransactions.concat("\nTransaction ID: " + t.getTransactionID() + ", Contact: "
                         + t.getContact().getName() + ", Amount: $" + t.getAmount() + ", Date: " + t.getDateOfTransaction());
             }
