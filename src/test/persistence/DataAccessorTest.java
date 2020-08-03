@@ -2,6 +2,8 @@ package persistence;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import model.Account;
+import model.Contact;
+import model.ContactList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,6 +21,7 @@ public class DataAccessorTest {
     DataAccessor dataAccessor;
     ObjectMapper objectMapper;
     Account account;
+    ContactList contactList;
     File file;
     private static final String FILE_PATH = "./data/usrAccountFile.json";
 
@@ -27,6 +30,7 @@ public class DataAccessorTest {
         dataAccessor = new DataAccessor();
         objectMapper = new ObjectMapper();
         account = new Account("PalmTree");
+        contactList = new ContactList();
     }
 
     @Test
@@ -73,15 +77,17 @@ public class DataAccessorTest {
 
     @Test
     public void testReadFromFile() {
+        contactList.addContactToList(new Contact("Emily"));
+        account.setContactList(contactList);
         dataAccessor.saveToFile(FILE_PATH, account);
 
         try {
-            dataAccessor.readFromFile(FILE_PATH);
-            assertEquals(account.getName(), dataAccessor.readFromFile(FILE_PATH).getName());
-            assertEquals(account.getTransactionHistory().size(),
-                    dataAccessor.readFromFile(FILE_PATH).getTransactionHistory().size());
-            assertEquals(account.getContactList().countNumContacts(),
-                    dataAccessor.readFromFile(FILE_PATH).getContactList().countNumContacts());
+            Account readAccount = dataAccessor.readFromFile(FILE_PATH);
+            assertEquals(account.getName(), readAccount.getName());
+            assertEquals(account.getTransactionHistory().size(), readAccount.getTransactionHistory().size());
+            assertEquals(account.getContactList().countNumContacts(), readAccount.getContactList().countNumContacts());
+            assertEquals(account.getContactList().getContactFromIndex(0).getName(),
+                                                readAccount.getContactList().getContactFromIndex(0).getName());
         } catch (Exception e) {
             fail("Should not have thrown exception!");
         }
