@@ -172,9 +172,7 @@ public class LoanApp {
             if (selectedContact == null) {
                 return;
             }
-
-            System.out.print("Enter transaction amount (positive for amount they pay you, negative for amount you pay "
-                    + "them): $");
+            askForTransactionAmount();
             double amount;
             try {
                 amount = Double.parseDouble(input.nextLine());
@@ -183,14 +181,18 @@ public class LoanApp {
                 return;
             }
 
-            String date = "";
             try {
-                date = promptUserForDate(selectedContact, amount);
+                promptUserForDate(selectedContact, amount);
             } catch (InvalidDateException e) {
                 addNewTransaction();
-                return;
             }
         }
+    }
+
+    // EFFECTS: prompts user for transaction amount
+    private void askForTransactionAmount() {
+        System.out.print("Enter transaction amount (positive for amount they pay you, negative for amount you pay "
+                + "them): $");
     }
 
     // EFFECTS: checks and returns if selected contact is valid; otherwise returns null
@@ -274,10 +276,6 @@ public class LoanApp {
             }
         }
 
-        if (th.equals("No transactions to show.")) {
-            return;
-        }
-
         System.out.println("Select a transaction from the list above by entering the transaction ID.");
         String userInput = input.nextLine();
         Transaction toBeEdited = th.getTransactionByID(userInput);
@@ -303,7 +301,7 @@ public class LoanApp {
         } else if (command.equals("c")) {
             assignNewContact(toBeEdited);
         } else if (command.equals("d")) {
-            String dateChosen = "";
+            String dateChosen;
             try {
                 dateChosen = promptUserForDate(chosenContact, toBeEdited.getAmount());
             } catch (InvalidDateException e) {
@@ -333,7 +331,7 @@ public class LoanApp {
         System.out.println("This transaction was originally: $" + toBeEdited.getAmount());
         System.out.println("Enter new amount of transaction (positive for amount paid to you, "
                 + "negative for amount you paid)");
-        Double userAmount = Double.parseDouble(input.nextLine()); // todo: Catch exception if not double!!
+        double userAmount = Double.parseDouble(input.nextLine()); // todo: Catch exception if not double!!
         toBeEdited.setAmount(userAmount);
         System.out.println("Amount changed to: $" + toBeEdited.getAmount());
     }
