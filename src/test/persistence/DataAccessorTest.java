@@ -61,6 +61,11 @@ public class DataAccessorTest {
 
         try {
             dataAccessor.readFromFile(FILE_PATH);
+            assertEquals(account.getName(), dataAccessor.readFromFile(FILE_PATH).getName());
+            assertEquals(account.getTransactionHistory().size(),
+                    dataAccessor.readFromFile(FILE_PATH).getTransactionHistory().size());
+            assertEquals(account.getContactList().countNumContacts(),
+                    dataAccessor.readFromFile(FILE_PATH).getContactList().countNumContacts());
         } catch (Exception e) {
             fail("Should not have thrown exception!");
         }
