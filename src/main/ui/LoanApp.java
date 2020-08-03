@@ -197,7 +197,6 @@ public class LoanApp {
     // TODO: move to invaliddateException!!
     public static boolean isValidDate(String dateToValidate) {
         String dateFormat = "dd/MM/yyyy";
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); TODO: delete if nothing breaks
 
         if (dateToValidate == null) {
             return false;
@@ -220,6 +219,8 @@ public class LoanApp {
         return true;
     }
 
+    // MODIFIES: transaction + associated details
+    // EFFECTS: modifies transaction details (i.e. amount, contact, date)
     public void editTransactionDetails() {
         // select a contact, view all transactions, and select a transaction to edit based on transaction ID
         Contact selectedContact;
@@ -345,6 +346,7 @@ public class LoanApp {
         }
     }
 
+    // EFFECTS: displays transaction history
     public void viewTransactionHistory() {
         Contact selectedContact;
         System.out.print("\nSelect a contact to view their transaction history:" + viewContactNames());
@@ -380,13 +382,6 @@ public class LoanApp {
             viewTransactionHistory();
         }
     }
-
-
-//    // EFFECTS: initializes a new transaction and adds it to the contact's transaction history
-//    public void initNewTransaction(Contact selectedContact, double amount, String date) {
-//        Transaction newTransaction = new Transaction(amount, selectedContact, date);
-//        selectedContact.addTransactionToAmountOwed(amount);
-//        selectedContact.addTransactionToHistory(newTransaction);
-//    }
+    
 
 }

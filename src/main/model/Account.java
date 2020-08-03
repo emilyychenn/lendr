@@ -35,11 +35,13 @@ public class Account {
         return this.balance;
     }
 
+    // MODIFIES: this (balance)
     // EFFECTS: sets balance for account
     public void setBalance(double amount) {
         this.balance = amount;
     }
 
+    // MODIFIES: this (contactList)
     // EFFECTS: sets contact list for account
     public void setContactList(ContactList contactList) {
         this.contactList = contactList;

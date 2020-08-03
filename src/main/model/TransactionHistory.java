@@ -6,10 +6,12 @@ import java.util.LinkedList;
 public class TransactionHistory {
     LinkedList<Transaction> transactions;
 
+    // EFFECTS: constructs a transaction history
     public TransactionHistory() {
         this.transactions = new LinkedList<>();
     }
 
+    // EFFECTS: returns transaction history
     public LinkedList<Transaction> getTransactions() {
         return transactions;
     }
@@ -38,6 +40,7 @@ public class TransactionHistory {
         return transactionsList;
     }
 
+    // EFFECTS: returns the transaction corresponding to the unique transaction ID
     public Transaction getTransactionByID(String transactionID) {
         for (Transaction t : transactions) {
             if (t.getTransactionID().equals(transactionID)) {
@@ -47,14 +50,17 @@ public class TransactionHistory {
         return null;
     }
 
+    // EFFECTS: returns number of transactions in transaction history
     public int size() {
         return transactions.size();
     }
 
+    // EFFECTS: returns transaction at given index in transaction history
     public Transaction getFromIndex(int i) {
         return transactions.get(i);
     }
 
+    // EFFECTS: prints transactions in given transaction history
     public String printTransactionHistory(TransactionHistory th) {
         String printedTransactions = "";
         if (th.size() == 0) {
@@ -69,6 +75,5 @@ public class TransactionHistory {
         }
     }
 
-    // TODO: methods to implement
-    // - get transactions by date range
+    // method to implement later: get transactions by date range??
 }

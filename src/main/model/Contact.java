@@ -49,6 +49,8 @@ public class Contact {
     }
 
     // REQUIRES: transaction is already in transaction history
+    // MODIFIES: transactionHistory and totalAmountOwed
+    // EFFECTS: removes a transaction from history and removes that amount from the totalAmountOwed
     public void removeTransactionFromHistory(Transaction transaction) {
         transactionHistory.removeTransaction(transaction);
         totalAmountOwed = totalAmountOwed + transaction.getAmount();
