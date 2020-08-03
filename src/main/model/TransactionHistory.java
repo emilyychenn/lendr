@@ -32,6 +32,36 @@ public class TransactionHistory {
         return transactionsList;
     }
 
+    public Transaction getTransactionByID(String transactionID) {
+        for (Transaction t : transactions) {
+            if (t.getTransactionID().equals(transactionID)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public int size() {
+        return transactions.size();
+    }
+
+    public Transaction getFromIndex(int i) {
+        return transactions.get(i);
+    }
+
+    public String printTransactionHistory(TransactionHistory th) {
+        String printedTransactions = "";
+        if (th.size() == 0) {
+            return "No transactions to show.";
+        } else {
+            for (int i = 0; i < th.size(); i++) {
+                Transaction t = th.getFromIndex(i);
+                printedTransactions = printedTransactions.concat("\nTransaction ID: " + t.getTransactionID() + ", Contact: "
+                        + t.getContact().getName() + ", Amount: $" + t.getAmount() + ", Date: " + t.getDateOfTransaction());
+            }
+            return printedTransactions;
+        }
+    }
 
     // TODO: methods to implement
     // - get transactions by date range

@@ -7,16 +7,14 @@ package model;
 public class Contact {
     private String name;
     private double totalAmountOwed; // positive if they owe me, negative if I owe them
-    private LoanList loanList;
-    private PaymentHistory paymentHistory;
+    private TransactionHistory transactionHistory = new TransactionHistory();
 
     // EFFECTS: constructs a contact with given name and default values of $0 owed, an empty loanList and an empty
     //          payment history
     public Contact(String name) {
         this.name = name;
         this.totalAmountOwed = 0.00; // positive if they owe me, negative if I owe them
-        this.loanList = new LoanList();
-        this.paymentHistory = new PaymentHistory(this);
+        this.transactionHistory = transactionHistory.getTransactionsByContactName(name);
     }
 
     // EFFECTS: returns name of contact
@@ -30,49 +28,36 @@ public class Contact {
         return this.totalAmountOwed;
     }
 
-    // EFFECTS: returns a list of all the loans between the user and the contact
-    public LoanList getLoanList() {
-        return this.loanList;
-    }
-
-    // EFFECTS: returns the payment history between the user and the contact
-    public PaymentHistory getPaymentHistory() {
-        return this.paymentHistory;
-    }
-
-    // REQUIRES: amount owed from user to someone else is negative, amount owed to user from someone else is positive
-    // MODIFIES: this (totalAmountOwed)
-    // EFFECTS: changes amount owed after a loan is added
-    public double addLoanToAmountOwed(double amount) {
-        totalAmountOwed = totalAmountOwed + amount;
-        return totalAmountOwed;
+    // EFFECTS: returns the transaction history (both payments and loans) between the user and the contact
+    public TransactionHistory getTransactionHistory() {
+        return this.transactionHistory;
     }
 
     // REQUIRES: positive value for amount someone else pays the user, negative for amount user pays someone else
     // MODIFIES: this (totalAmountOwed)
-    // EFFECTS: subtract amount paid from amount owed
-    public double addPaymentToTotal(double amount) {
+    // EFFECTS: subtracts amount paid from amount owed
+    public double addTransactionToAmountOwed(double amount) {
         totalAmountOwed = totalAmountOwed - amount;
         return totalAmountOwed;
     }
 
     // MODIFIES: this
-    // EFFECTS: adds a payment to the payment history
-    public void addPaymentToHistory(Payment payment) {
-        paymentHistory.addPaymentToHistory(payment);
+    // EFFECTS: adds a transaction to the transaction history
+    public void addTransactionToHistory(Transaction transaction) {
+        transactionHistory.addTransaction(transaction);
     }
 
     // MODIFIES: this
     // EFFECTS: changes total amount to reflect new loan, creates a new loan object, and adds it to the list of loans
-    public void addLoan(double amount, String date) {
-        addLoanToAmountOwed(amount);
-        Loan newLoan = new Loan(amount, date);
-        addLoanToList(newLoan);
+    public void addTransaction(double amount, String date) {
+        addTransactionToAmountOwed(amount);
+        Transaction newTransaction = new Transaction(amount, this, date);
+        addTransactionToList(newTransaction);
     }
 
     // MODIFIES: this
-    // EFFECTS: adds a loan to the list of loans
-    public void addLoanToList(Loan loan) {
-        loanList.addLoanToList(loan);
+    // EFFECTS: adds a transaction to the list of transactions
+    public void addTransactionToList(Transaction transaction) {
+        transactionHistory.addTransaction(transaction);
     }
 }
