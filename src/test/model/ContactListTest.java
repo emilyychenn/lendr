@@ -2,6 +2,10 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /*
@@ -31,6 +35,20 @@ public class ContactListTest {
         assertEquals(contact1, contactList.getContactByName("Felix"));
         assertEquals(contact2, contactList.getContactByName("Arthur"));
         assertEquals(null, contactList.getContactByName("Emily"));
+    }
+
+    @Test
+    public void testSetContacts() {
+        List<Contact> contactList2 = new ArrayList<>();
+        contact1 = new Contact("Felix");
+        contact2 = new Contact("Arthur");
+        contact3 = new Contact("Nick");
+        contactList2.add(contact1);
+        contactList2.add(contact2);
+        contactList2.add(contact3);
+
+        contactList.setContacts(contactList2);
+        assertTrue(contactList.getContacts().equals(contactList2));
     }
 
     @Test

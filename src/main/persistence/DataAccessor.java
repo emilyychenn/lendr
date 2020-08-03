@@ -33,7 +33,7 @@ public class DataAccessor {
     public Account readFromFile() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            File file = new File("data/usrAccountFile.json");
+            File file = new File("./data/usrAccountFile.json");
             Account account = objectMapper.readValue(file, Account.class);
             return account;
         } catch (IOException e) {

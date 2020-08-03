@@ -19,10 +19,9 @@ public class Account {
     }
 
     // MODIFIES: this
-    // EFFECTS: constructs a new account with 0 balance and an empty contact list
+    // EFFECTS: constructs a new account with an empty contact list
     public Account(String name) {
         this.name = name;
-//        this.balance = 0.00;
         this.contactList = new ContactList();
         this.transactionHistory = new TransactionHistory();
     }

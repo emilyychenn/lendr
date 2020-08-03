@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TransactionTest {
     Transaction testTransaction;
+    Transaction testTransaction2;
     Contact testContact;
     String date = "02/08/2020";
 
@@ -19,6 +20,14 @@ public class TransactionTest {
     public void setUp() {
         testContact = new Contact("Test Contact");
         testTransaction = new Transaction(-100.0, testContact, date);
+        testTransaction2 = new Transaction();
+    }
+
+    @Test
+    public void testDefaultConstructor() {
+        assertTrue(testTransaction2.getContact() == null);
+        assertTrue(testTransaction2.getTransactionID() == null);
+        assertTrue(testTransaction2.getDateOfTransaction() == null);
     }
 
     @Test
@@ -59,6 +68,13 @@ public class TransactionTest {
         assertFalse(testTransaction.getTransactionID().equals(testTransaction2.getTransactionID()));
         assertFalse(testTransaction2.getTransactionID().equals(testTransaction3.getTransactionID()));
         assertFalse(testTransaction.getTransactionID().equals(testTransaction3.getTransactionID()));
+    }
+
+    @Test
+    public void testSetTransactionID() {
+        assertFalse(testTransaction.getTransactionID().equals("9b8f18c1-be26-4f26-ab70-0a7eb6cf324d"));
+        testTransaction.setTransactionID("9b8f18c1-be26-4f26-ab70-0a7eb6cf324d");
+        assertEquals("9b8f18c1-be26-4f26-ab70-0a7eb6cf324d", testTransaction.getTransactionID());
     }
 
 
