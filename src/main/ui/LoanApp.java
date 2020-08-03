@@ -5,6 +5,7 @@ import model.*;
 import persistence.DataAccessor;
 
 import java.time.format.DateTimeParseException;
+import java.util.Calendar;
 import java.util.Scanner;
 
 import java.text.SimpleDateFormat;
@@ -169,9 +170,7 @@ public class LoanApp {
                 addNewTransaction();
                 return;
             }
-
-            Transaction newTransaction = new Transaction(amount, selectedContact, date);
-            transactionHistory.addTransaction(newTransaction);
+            myAccount.addTransactionToHistory(new Transaction(amount, selectedContact, date));
         }
     }
 
@@ -213,9 +212,11 @@ public class LoanApp {
 
         try {
             Date date = sdf.parse(dateToValidate); // will throw ParseException if invalid
-            Date latestDate = new Date(2100, 12, 31);
-            Date earliestDate = new Date(1900, 1, 1);
-            if (date.after(latestDate) | date.before(earliestDate)) {
+//            Date latestDate = Calendar.set(200, 11, 31);
+            Date latestDate = new Date(2100, Calendar.DECEMBER, 31);
+//            Date earliestDate = new Date(2000, Calendar.JANUARY, 1);
+            if (date.after(latestDate)) {
+//            if (date.after(latestDate) | date.before(earliestDate)) {
                 throw new InvalidDateException(dateToValidate, ERROR_MSG);
             }
             System.out.println(dateToValidate + " is a valid date.");
@@ -230,7 +231,6 @@ public class LoanApp {
     // EFFECTS: modifies transaction details (i.e. amount, contact, date)
     public void editTransactionDetails() {
         // select a contact, view all transactions, and select a transaction to edit based on transaction ID
-        Contact selectedContact;
         TransactionHistory th = new TransactionHistory();
         System.out.print("\nSelect a contact to view their transaction history" + viewContactNames());
         if (viewContactNames().equals("No contacts to show.")) {
@@ -262,10 +262,12 @@ public class LoanApp {
         displayTransactionEditMenu();
 
         String command = input.nextLine();
-        Contact chosenContact = new Contact("Unnamed");
+        Contact chosenContact = new Contact(toBeEdited.getContact().getName());
 
         if (command.equals("a")) {
+            toBeEdited.getContact().removeAmountFromBalance(toBeEdited.getAmount());
             editAmount(toBeEdited);
+            toBeEdited.getContact().addAmountToBalance(toBeEdited.getAmount());
         } else if (command.equals("c")) {
             assignNewContact(toBeEdited);
         } else if (command.equals("d")) {
@@ -297,7 +299,7 @@ public class LoanApp {
     private void editAmount(Transaction toBeEdited) {
         System.out.println("This transaction was originally: $" + toBeEdited.getAmount());
         System.out.println("Enter new amount of transaction (positive for amount paid to you, "
-                + "negative for amount you paid");
+                + "negative for amount you paid)");
         Double userAmount = Double.parseDouble(input.nextLine()); // todo: Catch exception if not double!!
         toBeEdited.setAmount(userAmount);
         System.out.println("Amount changed to: $" + toBeEdited.getAmount());

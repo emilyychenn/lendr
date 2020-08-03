@@ -32,6 +32,14 @@ public class DataAccessor {
         }
     }
 
+//    public boolean readFromFile() {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//
+//        File file = new File("data/car.json");
+//
+//        Car car = objectMapper.readValue(file, Car.class);
+//    }
+
 
 
 }
