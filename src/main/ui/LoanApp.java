@@ -4,14 +4,7 @@ import exceptions.InvalidDateException;
 import model.*;
 import persistence.DataAccessor;
 
-import java.time.format.DateTimeParseException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Scanner;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.text.ParseException;
 
 /**
  *  Represents the main source of interaction between the user and the console. The methods runLoanApp(), init(),
@@ -24,8 +17,6 @@ public class LoanApp {
     Account myAccount;
     String user;
     String contactName;
-//    private static final String ERROR_MSG = " is an invalid date. Date must be in format DD/MM/YYYY with a date "
-//                                             + "between Jan 1, 1900 and Dec 31, 2100.";
     private static final String FILE_PATH = "./data/usrAccountFile.json";
 
     // EFFECT: runs the money loaning application
@@ -239,18 +230,21 @@ public class LoanApp {
             System.out.println("\nNo contacts to show.");
         } else {
             th = getTransactionHistoryFromContact();
-            if (th == null) {
-                return;
-            }
-            if (th.equals("No transactions to show.")) {
+            if (th == null || th.size() == 0) {
                 return;
             }
         }
 
         System.out.println("Select a transaction from the list above by entering the transaction ID.");
         String userInput = input.nextLine();
-        Transaction toBeEdited = th.getTransactionByID(userInput);
-        if (toBeEdited.equals(null)) {
+        Transaction toBeEdited = null;
+        try {
+            toBeEdited = th.getTransactionByID(userInput);
+        } catch (NullPointerException e) {
+            System.out.println("Invalid transaction ID.");
+        }
+
+        if (null == toBeEdited) {
             System.out.println("Invalid transaction ID.");
         } else {
             editTransactionField(toBeEdited);
@@ -404,7 +398,7 @@ public class LoanApp {
     // EFFECTS: displays transaction history
     public void viewTransactionHistory() {
         Contact selectedContact;
-        System.out.print("\nSelect a contact to view their transaction history:" + viewContactNames());
+        System.out.print("\nSelect a contact to view their transaction history: " + viewContactNames());
         if (viewContactNames().equals("No contacts to show.")) {
             System.out.println("\nNo contacts to show.");
         } else {

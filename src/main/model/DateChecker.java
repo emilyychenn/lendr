@@ -13,6 +13,7 @@ public class DateChecker {
     private static final String ERROR_MSG = " is an invalid date. Date must be in format DD/MM/YYYY with a date "
             + "between Jan 1, 1900 and Dec 31, 2100.";
 
+    // EFFECTS: Constructs new date checker
     public DateChecker() {
     }
 
