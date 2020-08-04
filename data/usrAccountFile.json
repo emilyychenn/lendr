@@ -1,1 +1,1 @@
-{"name":"PalmTree","contactList":{"contacts":[{"name":"Emily","contactBalance":0.0}]},"transactionHistory":{"transactions":[]}}
+{"name":"PalmTree","contactList":{"contacts":[{"name":"Emily","contactBalance":1234.0}]},"transactionHistory":{"transactions":[{"amount":1234.0,"contact":{"name":"Emily","contactBalance":1234.0},"dateOfTransaction":"12/12/1998","transactionID":"ede2fc83-25ee-4323-84b9-bba9b255318b"}]}}
