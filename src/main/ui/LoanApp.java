@@ -1,21 +1,10 @@
 package ui;
 
 import exceptions.InvalidDateException;
-import model.Account;
-import model.Contact;
-import model.ContactList;
-import model.Transaction;
-import model.TransactionHistory;
+import model.*;
 import persistence.DataAccessor;
 
-import java.time.format.DateTimeParseException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Scanner;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.text.ParseException;
 
 /**
  *  Represents the main source of interaction between the user and the console. The methods runLoanApp(), init(),
@@ -28,8 +17,6 @@ public class LoanApp {
     Account myAccount;
     String user;
     String contactName;
-    private static final String ERROR_MSG = " is an invalid date. Date must be in format DD/MM/YYYY with a date "
-                                             + "between Jan 1, 1900 and Dec 31, 2100.";
     private static final String FILE_PATH = "./data/usrAccountFile.json";
 
     // EFFECT: runs the money loaning application
@@ -223,7 +210,7 @@ public class LoanApp {
     private String promptUserForDate(Contact selectedContact, double amount) throws InvalidDateException {
         System.out.println("Enter date of transaction (DD/MM/YYYY): ");
         String date = input.nextLine();
-        if (isValidDate(date)) {
+        if (DateChecker.isValidDate(date)) {
             selectedContact.addAmountToBalance(amount);
             myAccount.getTransactionHistory().addTransaction(new Transaction(amount, selectedContact, date));
             printBalance(selectedContact);
@@ -231,38 +218,6 @@ public class LoanApp {
         } else {
             throw new InvalidDateException(date, "Invalid date.");
         }
-    }
-
-    // REQUIRES: valid date format 'DD/MM/YYYY' and valid date
-    // EFFECTS: checks that the date is in the correct format and is indeed a real date
-    // TODO: move to invaliddateException!!
-    public static boolean isValidDate(String dateToValidate) {
-        String dateFormat = "dd/MM/yyyy";
-
-        if (dateToValidate == null) {
-            return false;
-        }
-
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-        sdf.setLenient(false);
-
-        try {
-            Date date = sdf.parse(dateToValidate); // will throw ParseException if invalid
-            Calendar latestDate = new GregorianCalendar();
-            latestDate.set(2100, Calendar.DECEMBER, 31);
-
-            Calendar earliestDate = new GregorianCalendar();
-            earliestDate.set(1900, Calendar.JANUARY, 1);
-
-            if (date.after(latestDate.getTime()) || date.before(earliestDate.getTime())) {
-                throw new InvalidDateException(dateToValidate, ERROR_MSG);
-            }
-            System.out.println(dateToValidate + " is a valid date.");
-        } catch (DateTimeParseException | ParseException | InvalidDateException e) {
-            System.out.println(dateToValidate + ERROR_MSG);
-            return false;
-        }
-        return true;
     }
 
     // MODIFIES: transaction + associated details
@@ -275,15 +230,21 @@ public class LoanApp {
             System.out.println("\nNo contacts to show.");
         } else {
             th = getTransactionHistoryFromContact();
-            if (th == null) {
+            if (th == null || th.size() == 0) {
                 return;
             }
         }
 
         System.out.println("Select a transaction from the list above by entering the transaction ID.");
         String userInput = input.nextLine();
-        Transaction toBeEdited = th.getTransactionByID(userInput);
-        if (toBeEdited.equals(null)) {
+        Transaction toBeEdited = null;
+        try {
+            toBeEdited = th.getTransactionByID(userInput);
+        } catch (NullPointerException e) {
+            System.out.println("Invalid transaction ID.");
+        }
+
+        if (null == toBeEdited) {
             System.out.println("Invalid transaction ID.");
         } else {
             editTransactionField(toBeEdited);
@@ -355,18 +316,23 @@ public class LoanApp {
 
         System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
         String contactName = input.nextLine();
-
         chosenContact = myAccount.getContactList().getContactByName(contactName);
 
-        if (chosenContact.equals(null)) {
-            foundNoContact(contactName);
+        if (chosenContact == null) {
+            System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
+                    + "main menu or any other key to select an existing contact.");
+            if (!(input.nextLine().trim().equals("r"))) {
+                assignNewContact(toBeEdited);
+            } else {
+                return;
+            }
         } else {
             Contact originalContact = toBeEdited.getContact();
             originalContact.removeAmountFromBalance(toBeEdited.getAmount());
             toBeEdited.setContact(chosenContact);
             chosenContact.addAmountToBalance(toBeEdited.getAmount());
+            System.out.println("Contact changed to: " + toBeEdited.getContact().getName());
         }
-        System.out.println("Contact changed to: " + toBeEdited.getContact().getName());
     }
 
     // EFFECTS: returns a transaction history for the selected contact
@@ -432,7 +398,7 @@ public class LoanApp {
     // EFFECTS: displays transaction history
     public void viewTransactionHistory() {
         Contact selectedContact;
-        System.out.print("\nSelect a contact to view their transaction history:" + viewContactNames());
+        System.out.print("\nSelect a contact to view their transaction history: " + viewContactNames());
         if (viewContactNames().equals("No contacts to show.")) {
             System.out.println("\nNo contacts to show.");
         } else {
