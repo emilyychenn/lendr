@@ -1,7 +1,5 @@
 package model;
 
-import persistence.DataAccessor;
-
 /**
  *  Represents the user's account.
  */
