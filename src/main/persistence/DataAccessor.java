@@ -8,6 +8,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ *  Saves and loads user data.
+ */
+
 public class DataAccessor {
     ObjectMapper objectMapper = new ObjectMapper();
 

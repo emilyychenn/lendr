@@ -17,7 +17,6 @@ public class Contact {
     public Contact(String name) {
         this.name = name;
         this.contactBalance = 0.00; // positive if they owe me, negative if I owe them
-//        this.transactionHistory = transactionHistory.getTransactionsByContactName(name);
     }
 
     // EFFECTS: returns name of contact
