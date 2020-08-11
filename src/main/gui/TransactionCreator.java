@@ -24,7 +24,7 @@ public class TransactionCreator {
     private static JDialog transactionDialog;
     private static JFrame mainWindow;
     private Account account;
-    private DecimalFormat df = new DecimalFormat("#.00");
+    private DecimalFormat df = new DecimalFormat("#0.00");
 
     // EFFECTS: constructor to initialize new window
     public TransactionCreator(JFrame mainWindow, Account myAccount) {

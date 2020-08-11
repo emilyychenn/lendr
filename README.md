@@ -6,11 +6,21 @@ Ever had difficulty keeping track of how much money you owe your friends or how 
 This program would ideally be used by individuals or groups of friends/colleagues/acquaintances in similar situations as described above to help keep track of who owes money to whom. The application's core features are listed below under *User Stories*.
 
 ## User Stories
-
 As a typical user, I want to be able to:
 - add a new contact to whom I owe money or who owes me money, to my list of contacts
 - add new transaction(s) to an existing contact, and include details such as the date and amount owed
+- edit any transaction by changing the contact, amount owed, or date (option only available on console-based version)
 - view a list of the people (my contacts) and their overall owed balance
 - view a list of transactions for a selected contact
 - when I select the quit option, have the option to save my list of contacts (and overall owed balances) to a file
 - optionally load my account data from a file when the program starts
+
+## Instructions for Grader
+- Note: When the application is first started, it will prompt the user for their name to use in a welcome message. This is purely optional to make the user feel more welcome.
+- You can generate the first required event by clicking the ```new contact``` button. This will prompt you to enter a contact name for this contact (will not allow any duplicates) and will create a new contact, which is automatically added to your contact list. You can view the full contact list by clicking the ```view contact``` button in the main menu.
+- You can generate the second required event by clicking the ```add transaction``` button. Given you already have at least one contact, this will create a new transaction by prompting for a contact, amount, and date of transaction, and will adjust the contact's balance accordingly (this change is reflected in the full contact history under ```view contact```) 
+- You can locate my visual component by opening the application: the logo is an image at the top, and each of the buttons are individual images. 
+- You can trigger my audio component by clicking any of the buttons. The ```load data``` and ```save and quit``` buttons play a different sound then the rest of the buttons.
+- You can save the state of my application by clicking the ```save and quit``` button. This will also terminate the application once data is saved. To leave without saving, click the x in the top lefthand corner of the window.
+- You can reload the state of my application by clicking the ```load data``` button. Note that if you do this after having creeated contacts/transactions it will completely replace your current activity!
+- Note: you can return to the main menu at any time by simply exiting the current window that you are in.

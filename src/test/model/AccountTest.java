@@ -20,8 +20,9 @@ public class AccountTest {
 
     @Test
     public void testDefaultConstructor() {
-        assertTrue(testAccount2.getContactList() == null);
-        assertTrue(testAccount2.getTransactionHistory() == null);
+        System.out.println("Contact list: " + testAccount2.getContactList());
+        assertTrue(testAccount2.getContactList().countNumContacts() == 0);
+        assertTrue(testAccount2.getTransactionHistory().size() == 0);
     }
 
     @Test

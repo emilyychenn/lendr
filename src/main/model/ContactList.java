@@ -55,7 +55,7 @@ public class ContactList {
     // EFFECTS: returns true if given contact is in the list
     public Boolean containsByName(String name) {
         for (Contact c : contacts) {
-            if (c.getName().equals(name)) {
+            if (c.getName().equalsIgnoreCase(name)) {
                 return true;
             }
         }

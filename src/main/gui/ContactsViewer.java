@@ -19,7 +19,7 @@ import java.util.List;
 public class ContactsViewer {
     private static JDialog contactListDialog;
     private static JFrame mainWindow;
-    private DecimalFormat df = new DecimalFormat("#.00");
+    private DecimalFormat df = new DecimalFormat("#0.00");
 
     // EFFECTS: constructor to initialize new window
     public ContactsViewer(JFrame mainWindow) {
@@ -42,7 +42,7 @@ public class ContactsViewer {
                 panel.add(contact);
             } else {
                 for (Contact c : contactList) {
-                    contact = new JLabel(c.getName() + ": " + df.format(c.getContactBalance()));
+                    contact = new JLabel(c.getName() + ": $" + df.format(c.getContactBalance()));
                     panel.add(contact);
                 }
             }

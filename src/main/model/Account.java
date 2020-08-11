@@ -12,6 +12,9 @@ public class Account {
 
     // EFFECTS: constructs a default constructor
     public Account() {
+        this.name = null;
+        this.contactList = new ContactList();
+        this.transactionHistory = new TransactionHistory();
     }
 
     // MODIFIES: this
