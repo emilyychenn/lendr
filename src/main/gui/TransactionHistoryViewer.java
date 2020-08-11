@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowEvent;
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -16,6 +17,7 @@ import java.util.List;
 public class TransactionHistoryViewer {
     private static JDialog transactionHistoryDialog;
     private static JFrame mainWindow;
+    private DecimalFormat df = new DecimalFormat("#.00");
 
     // EFFECTS: constructor to initialize new window
     public TransactionHistoryViewer(JFrame mainWindow) {
@@ -38,8 +40,8 @@ public class TransactionHistoryViewer {
             } else {
                 for (Transaction t : transactionHistory) {
                     transaction = new JLabel("\nTransaction ID: " + t.getTransactionID()
-                            + ", Contact: " + t.getContact().getName() + ", Amount: $" + t.getAmount() + ", Date: "
-                            + t.getDateOfTransaction());
+                            + ", Contact: " + t.getContact().getName() + ", Amount: $" + df.format(t.getAmount())
+                            + ", Date: " + t.getDateOfTransaction());
                     panel.add(transaction);
                 }
             }

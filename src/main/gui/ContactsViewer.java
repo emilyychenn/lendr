@@ -8,6 +8,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowEvent;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class ContactsViewer {
     private static JDialog contactListDialog;
     private static JFrame mainWindow;
+    private DecimalFormat df = new DecimalFormat("#.00");
 
     // EFFECTS: constructor to initialize new window
     public ContactsViewer(JFrame mainWindow) {
@@ -40,7 +42,7 @@ public class ContactsViewer {
                 panel.add(contact);
             } else {
                 for (Contact c : contactList) {
-                    contact = new JLabel(c.getName() + ": " + c.getContactBalance() + "\n");
+                    contact = new JLabel(c.getName() + ": " + df.format(c.getContactBalance()));
                     panel.add(contact);
                 }
             }

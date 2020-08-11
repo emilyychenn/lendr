@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class TransactionCreator {
     private static JDialog transactionDialog;
     private static JFrame mainWindow;
     private Account account;
+    private DecimalFormat df = new DecimalFormat("#.00");
 
     // EFFECTS: constructor to initialize new window
     public TransactionCreator(JFrame mainWindow, Account myAccount) {
@@ -91,7 +93,7 @@ public class TransactionCreator {
         }
 
         createTransaction(selectedContact, enteredAmount, transactionDate);
-        showConfirmation(selectedContact);
+        showConfirmation(selectedContact, enteredAmount);
         transactionDialog.dispatchEvent(new WindowEvent(transactionDialog, WindowEvent.WINDOW_CLOSING));
     }
 
@@ -147,16 +149,15 @@ public class TransactionCreator {
     }
 
     // EFFECTS: displays confirmation message once transaction is added to history and contact's balance is changed
-    private void showConfirmation(Contact selectedContact) {
-        double amountOwed = selectedContact.getContactBalance();
+    private void showConfirmation(Contact selectedContact, Double amount) {
         String confirmationMsg = "";
 
-        if (amountOwed < 0) {
-            confirmationMsg = selectedContact.getName() + " paid you $" + Math.abs(amountOwed);
-        } else if (amountOwed > 0) {
-            confirmationMsg = "You paid $" + Math.abs(amountOwed) + " to " + selectedContact.getName();
+        if (amount < 0) {
+            confirmationMsg = "You are paying $" + df.format(Math.abs(amount)) + " to " + selectedContact.getName();
+        } else if (amount > 0) {
+            confirmationMsg = selectedContact.getName() + " is paying you $" + df.format(Math.abs(amount));
         } else {
-            confirmationMsg = "Congratulations! You owe each other nothing.";
+            confirmationMsg = "No money was exchanged.";
         }
 
         JOptionPane.showMessageDialog(transactionDialog, confirmationMsg);
@@ -168,7 +169,8 @@ public class TransactionCreator {
         try {
             enteredAmount = Double.valueOf(amount.getText());
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(transactionDialog, "Invalid amount. Enter negative amounts in form -XXX.");
+            JOptionPane.showMessageDialog(transactionDialog, "Invalid amount. Enter negative amounts in "
+                                            + "form -X.XX");
             return null;
         }
         return enteredAmount;
