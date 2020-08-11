@@ -1,7 +1,9 @@
 package ui;
 
+import gui.LoanAppGUI;
+
 /**
- *  Main: runs the program.
+ *  Main: runs the console-based program.
  */
 
 public class Main {

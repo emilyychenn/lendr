@@ -4,6 +4,7 @@ import exceptions.InvalidDateException;
 import model.*;
 import persistence.DataAccessor;
 
+
 import java.util.Scanner;
 
 /**
@@ -98,14 +99,14 @@ public class LoanApp {
 
     // MODIFIES: this
     // EFFECTS: initializes user's account and contact list
-    private void init(String name) {
+    public void init(String name) {
         myAccount = new Account(name);
         myAccount.setContactList(new ContactList());
         myAccount.setTransactionHistory(new TransactionHistory());
     }
 
     // EFFECTS: displays menu of options to user
-    private void displayMenu() {
+    public void displayMenu() {
         System.out.println("\nSelect from:");
         System.out.println("\tc -> create a new contact");
         System.out.println("\ta -> add a transaction");
@@ -117,7 +118,7 @@ public class LoanApp {
 
     // MODIFIES: this
     // EFFECTS: processes user command
-    private void processCommand(String command) {
+    public void processCommand(String command) {
         if (command.equals("c")) {
             createContact();
         } else if (command.equals("a")) {
@@ -151,8 +152,8 @@ public class LoanApp {
 
     // REQUIRES: valid amount (double)
     // MODIFIES: this
-    // EFFECTS: conducts a new loan transaction
-    private void addNewTransaction() {
+    // EFFECTS: conducts a new transaction
+    public void addNewTransaction() {
         System.out.print("\nContact List: " + viewContactNames());
         if (viewContactNames().equals("No contacts to show.")) {
             System.out.println("\nYou must create a contact before adding a transaction.");
