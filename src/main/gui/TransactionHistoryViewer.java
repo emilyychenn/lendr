@@ -17,7 +17,7 @@ import java.util.List;
 public class TransactionHistoryViewer {
     private static JDialog transactionHistoryDialog;
     private static JFrame mainWindow;
-    private DecimalFormat df = new DecimalFormat("#.00");
+    private DecimalFormat df = new DecimalFormat("#0.00");
 
     // EFFECTS: constructor to initialize new window
     public TransactionHistoryViewer(JFrame mainWindow) {

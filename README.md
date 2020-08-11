@@ -10,6 +10,7 @@ This program would ideally be used by individuals or groups of friends/colleague
 As a typical user, I want to be able to:
 - add a new contact to whom I owe money or who owes me money, to my list of contacts
 - add new transaction(s) to an existing contact, and include details such as the date and amount owed
+- edit any transaction by changing the contact, amount owed, or date (option only available on console-based version)
 - view a list of the people (my contacts) and their overall owed balance
 - view a list of transactions for a selected contact
 - when I select the quit option, have the option to save my list of contacts (and overall owed balances) to a file
