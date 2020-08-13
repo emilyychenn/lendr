@@ -1,6 +1,5 @@
 package ui;
 
-import exceptions.InvalidDateException;
 import model.*;
 import persistence.DataAccessor;
 
@@ -8,17 +7,21 @@ import persistence.DataAccessor;
 import java.util.Scanner;
 
 /**
- *  Represents the main source of interaction between the user and the console. The methods runLoanApp(), init(),
- *  displayMenu(), and processCommand() are based off the TellerApp example presented in class.
+ *  Represents the main source of interaction between the user and the console, that handles each of the different
+ *  options presented to the user in the main menu.
  */
 
 public class LoanApp {
     private Scanner input;
     private DataAccessor dataAccessor = new DataAccessor();
-    Account myAccount;
-    String user;
-    String contactName;
+    private Account myAccount;
+    private String user;
     private static final String FILE_PATH = "./data/usrAccountFile.json";
+    private ContactCreator contactCreator = new ContactCreator();
+    private TransactionCreator transactionCreator = new TransactionCreator();
+    private TransactionEditor transactionEditor = new TransactionEditor();
+    private ContactsViewer contactsViewer = new ContactsViewer();
+    private TransactionHistoryViewer thv = new TransactionHistoryViewer();
 
     // EFFECT: runs the money loaning application
     public LoanApp() {
@@ -74,7 +77,6 @@ public class LoanApp {
         }
     }
 
-
     // EFFECTS: asks user if they wish to save their info, automatically saves if they still don't have a valid
     //          response after 3 rounds of prompting
     private void saveData() {
@@ -120,319 +122,37 @@ public class LoanApp {
     // EFFECTS: processes user command
     public void processCommand(String command) {
         if (command.equals("c")) {
-            createContact();
+            contactCreator.createContact(this);
         } else if (command.equals("a")) {
-            addNewTransaction();
+            transactionCreator.addNewTransaction(this);
         } else if (command.equals("e")) {
-            editTransactionDetails();
+            transactionEditor.editTransactionDetails(this);
         } else if (command.equals("v")) {
-            viewContactList();
+            contactsViewer.viewContactList(this);
         } else if (command.equals("t")) {
-            viewTransactionHistory();
+            thv.viewTransactionHistory(this);
         } else {
             System.out.println("Selection not valid...");
         }
     }
 
-    // MODIFIES: this
-    // EFFECTS: creates a new contact to whom a loan or a payment can be added
-    public void createContact() {
-        System.out.println("Contact's name: ");
-        contactName = input.nextLine();
-
-        if (myAccount.getContactList().containsByName(contactName)) {
-            System.out.println(contactName + " already exists as a contact. Please enter a different name.");
-        } else {
-            Contact newContact = new Contact(contactName);
-            myAccount.getContactList().addContactToList(newContact);
-            System.out.println("Contact " + contactName + " added to contact list.");
-        }
+    public Account getMyAccount() {
+        return myAccount;
     }
 
-
-    // REQUIRES: valid amount (double)
-    // MODIFIES: this
-    // EFFECTS: conducts a new transaction
-    public void addNewTransaction() {
-        System.out.print("\nContact List: " + viewContactNames());
-        if (viewContactNames().equals("No contacts to show.")) {
-            System.out.println("\nYou must create a contact before adding a transaction.");
-        } else {
-            Contact selectedContact = retrieveSelectedContact();
-            if (selectedContact == null) {
-                return;
-            }
-            askForTransactionAmount();
-            double amount;
-            try {
-                amount = Double.parseDouble(input.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid amount. (Negative numbers must be in form -XXX).");
-                return;
-            }
-
-            try {
-                promptUserForDate(selectedContact, amount);
-            } catch (InvalidDateException e) {
-                addNewTransaction();
-            }
-        }
+    public ContactCreator getContactCreator() {
+        return contactCreator;
     }
 
-    // EFFECTS: prompts user for transaction amount
-    private void askForTransactionAmount() {
-        System.out.print("Enter transaction amount (positive for amount they pay you, negative for amount you pay "
-                + "them): $");
+    public TransactionCreator getTransactionCreator() {
+        return transactionCreator;
     }
 
-    // EFFECTS: checks and returns if selected contact is valid; otherwise returns null
-    private Contact retrieveSelectedContact() {
-        System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
-        String contactName = input.nextLine();
-        Contact selectedContact = myAccount.getContactList().getContactByName(contactName);
-
-        if (selectedContact == null) {
-            foundNoContactForTransaction(contactName);
-            return null;
-        }
-        return selectedContact;
+    public TransactionHistoryViewer getThv() {
+        return thv;
     }
 
-    // EFFECTS: prompts user when given contact name does not belong to an existing contact (when adding a loan)
-    private void foundNoContactForTransaction(String contactName) {
-        System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
-                + "main menu or any other key to select an existing contact.");
-        if (!(input.nextLine().trim().equals("r"))) {
-            addNewTransaction();
-        }
+    public ContactsViewer getContactsViewer() {
+        return contactsViewer;
     }
-
-    // EFFECTS: prompts user for a date and checks that the given date is valid
-    private String promptUserForDate(Contact selectedContact, double amount) throws InvalidDateException {
-        System.out.println("Enter date of transaction (DD/MM/YYYY): ");
-        String date = input.nextLine();
-        if (DateChecker.isValidDate(date)) {
-            selectedContact.addAmountToBalance(amount);
-            myAccount.getTransactionHistory().addTransaction(new Transaction(amount, selectedContact, date));
-            printBalance(selectedContact);
-            return date;
-        } else {
-            throw new InvalidDateException(date, "Invalid date.");
-        }
-    }
-
-    // MODIFIES: transaction + associated details
-    // EFFECTS: modifies transaction details (i.e. amount, contact, date)
-    public void editTransactionDetails() {
-        // select a contact, view all transactions, and select a transaction to edit based on transaction ID
-        TransactionHistory th = new TransactionHistory();
-        System.out.print("\nSelect a contact to view their transaction history" + viewContactNames());
-        if (viewContactNames().equals("No contacts to show.")) {
-            System.out.println("\nNo contacts to show.");
-        } else {
-            th = getTransactionHistoryFromContact();
-            if (th == null || th.size() == 0) {
-                return;
-            }
-        }
-
-        System.out.println("Select a transaction from the list above by entering the transaction ID.");
-        String userInput = input.nextLine();
-        Transaction toBeEdited = null;
-        try {
-            toBeEdited = th.getTransactionByID(userInput);
-        } catch (NullPointerException e) {
-            System.out.println("Invalid transaction ID.");
-        }
-
-        if (null == toBeEdited) {
-            System.out.println("Invalid transaction ID.");
-        } else {
-            editTransactionField(toBeEdited);
-        }
-    }
-
-    // MODIFIES: transaction
-    // EFFECTS: allows user to select a field to edit
-    private void editTransactionField(Transaction toBeEdited) {
-        displayTransactionEditMenu();
-
-        String command = input.nextLine();
-        Contact chosenContact = new Contact(toBeEdited.getContact().getName());
-
-        if (command.equals("a")) {
-            toBeEdited.getContact().removeAmountFromBalance(toBeEdited.getAmount());
-            editAmount(toBeEdited);
-            toBeEdited.getContact().addAmountToBalance(toBeEdited.getAmount());
-        } else if (command.equals("c")) {
-            assignNewContact(toBeEdited);
-        } else if (command.equals("d")) {
-            String dateChosen;
-            try {
-                dateChosen = promptUserForDate(chosenContact, toBeEdited.getAmount());
-            } catch (InvalidDateException e) {
-                return;
-            }
-            toBeEdited.setDateOfTransaction(dateChosen);
-            System.out.println("Date changed to: " + toBeEdited.getDateOfTransaction());
-        } else if (command.equals("r")) {
-            return;
-        } else {
-            System.out.println("Invalid field.");
-        }
-    }
-
-    // EFFECTS: displays options to edit a transaction
-    private void displayTransactionEditMenu() {
-        System.out.println("\nWhich field would you like to edit:");
-        System.out.println("\ta -> amount");
-        System.out.println("\tc -> contact");
-        System.out.println("\td -> date of transaction");
-        System.out.println("\tr -> return to main menu");
-    }
-
-    // MODIFIES: amount of transaction
-    // EFFECT: changes amount of transaction to given amount
-    private void editAmount(Transaction toBeEdited) {
-        System.out.println("This transaction was originally: $" + toBeEdited.getAmount());
-        System.out.println("Enter new amount of transaction (positive for amount paid to you, "
-                + "negative for amount you paid)");
-        double userAmount;
-        try {
-            userAmount = Double.parseDouble(input.nextLine());
-            toBeEdited.setAmount(userAmount);
-            System.out.println("Amount changed to: $" + toBeEdited.getAmount());
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid amount. (Negative numbers must be in form -XXX).");
-            return;
-        }
-    }
-
-    // MODIFIES: contact assigned to transaction
-    // EFFECT: assigns transaction to a new contact
-    private void assignNewContact(Transaction toBeEdited) {
-        Contact chosenContact;
-        System.out.println("This transaction is assigned to: " + toBeEdited.getContact().getName());
-        System.out.print("\nSelect a contact to assign this transaction to:" + viewContactNames());
-
-        System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
-        String contactName = input.nextLine();
-        chosenContact = myAccount.getContactList().getContactByName(contactName);
-
-        if (chosenContact == null) {
-            System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
-                    + "main menu or any other key to select an existing contact.");
-            if (!(input.nextLine().trim().equals("r"))) {
-                assignNewContact(toBeEdited);
-            } else {
-                return;
-            }
-        } else {
-            Contact originalContact = toBeEdited.getContact();
-            originalContact.removeAmountFromBalance(toBeEdited.getAmount());
-            toBeEdited.setContact(chosenContact);
-            chosenContact.addAmountToBalance(toBeEdited.getAmount());
-            System.out.println("Contact changed to: " + toBeEdited.getContact().getName());
-        }
-    }
-
-    // EFFECTS: returns a transaction history for the selected contact
-    private TransactionHistory getTransactionHistoryFromContact() {
-        Contact selectedContact;
-        TransactionHistory th;
-        System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
-        String contactName = input.nextLine();
-        selectedContact = myAccount.getContactList().getContactByName(contactName);
-
-        if (selectedContact == null) {
-            foundNoContact(contactName);
-            return null;
-        }
-        th = myAccount.getTransactionHistory().getTransactionsByContactName(contactName);
-        System.out.println("Transaction History with " + contactName + ": " + th.printTransactionHistory());
-        return th;
-    }
-
-    // EFFECTS: prints balance owed to a specific contact
-    public void printBalance(Contact contact) {
-        double amountOwed = contact.getContactBalance();
-
-        if (amountOwed < 0) {
-            System.out.println(contact.getName() + " paid you $" + Math.abs(amountOwed));
-        } else if (amountOwed > 0) {
-            System.out.println("You paid $" + Math.abs(amountOwed) + " to " + contact.getName());
-        } else {
-            System.out.println("Congratulations! You owe each other nothing.");
-        }
-    }
-
-    // EFFECTS: prints full contact list and amount owed to/from each contact, positive for amount owed to user and
-    //          negative for amount owed to the user's contact
-    public void viewContactList() {
-        System.out.println("Contacts (positive for amount owed to you and negative for amount you owe): ");
-        if (myAccount.getContactList().countNumContacts() == 0) {
-            System.out.println("No contacts to show.");
-        } else {
-            for (int i = 0; i < myAccount.getContactList().countNumContacts(); i++) {
-                Contact contact = myAccount.getContactList().getContactFromIndex(i);
-                String contactName = contact.getName();
-                double amountOwed = contact.getContactBalance();
-                System.out.println(contactName + ": $ " + amountOwed + " owed");
-            }
-        }
-    }
-
-    // EFFECTS: prints only contact's names for easy selection when adding a loan or a payment
-    public String viewContactNames() {
-        String contactNames = "";
-        if (myAccount.getContactList().countNumContacts() == 0) {
-            return "No contacts to show.";
-        } else {
-            for (int i = 0; i < myAccount.getContactList().countNumContacts(); i++) {
-                Contact contact = myAccount.getContactList().getContactFromIndex(i);
-                contactNames = contactNames.concat("\n" + contact.getName());
-            }
-            return contactNames;
-        }
-    }
-
-    // EFFECTS: displays transaction history
-    public void viewTransactionHistory() {
-        Contact selectedContact;
-        System.out.print("\nSelect a contact to view their transaction history: " + viewContactNames());
-        if (viewContactNames().equals("No contacts to show.")) {
-            System.out.println("\nNo contacts to show.");
-        } else {
-            System.out.println("\nEnter a contact from list above (name is not case sensitive): ");
-            String contactName = input.nextLine();
-            if (contactName.equals("f")) { // TODO: add a check to make sure no contacts are named 'f'
-                System.out.println("Full Transaction History: ");
-                System.out.println(myAccount.getTransactionHistory().printTransactionHistory());
-                return;
-            } else {
-                selectedContact = myAccount.getContactList().getContactByName(contactName);
-            }
-
-            if (selectedContact == null) {
-                foundNoContact(contactName);
-                return;
-            }
-
-            System.out.println("Transaction history with " + contactName + ": ");
-            TransactionHistory selectedTransactions =
-                    myAccount.getTransactionHistory().getTransactionsByContactName(contactName);
-            System.out.println(selectedTransactions.printTransactionHistory());
-        }
-    }
-
-    // EFFECTS: prompts user when given contact name does not belong to an existing contact (when adding a loan)
-    private void foundNoContact(String contactName) {
-        System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
-                + "main menu or any other key to select an existing contact.");
-        if (!(input.nextLine().trim().equals("r"))) {
-            viewTransactionHistory();
-        }
-    }
-
-
 }

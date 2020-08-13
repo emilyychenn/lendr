@@ -1,7 +1,6 @@
 package gui;
 
 import model.Account;
-import model.Contact;
 import model.ContactList;
 import model.TransactionHistory;
 import persistence.DataAccessor;
@@ -57,8 +56,8 @@ public class ButtonActionHandler extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playSound("./sounds/bloop.wav");
-                ContactsViewer contactsViewer = new ContactsViewer(LoanAppGUI.getFrame());
-                contactsViewer.createContactListWindow(myAccount.getContactList());
+                ContactsViewerGUI contactsViewerGUI = new ContactsViewerGUI(LoanAppGUI.getFrame());
+                contactsViewerGUI.createContactListWindow(myAccount.getContactList());
             }
         });
     }
@@ -69,7 +68,7 @@ public class ButtonActionHandler extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playSound("./sounds/bloop.wav");
-                TransactionHistoryViewer transactionsViewer = new TransactionHistoryViewer(LoanAppGUI.getFrame());
+                TransactionHistoryViewerGUI transactionsViewer = new TransactionHistoryViewerGUI(LoanAppGUI.getFrame());
                 transactionsViewer.createTransactionHistoryWindow(myAccount.getTransactionHistory());
             }
         });
@@ -81,8 +80,9 @@ public class ButtonActionHandler extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playSound("./sounds/bloop.wav");
-                TransactionCreator transactionCreator = new TransactionCreator(LoanAppGUI.getFrame(), myAccount);
-                transactionCreator.createAddTransactionWindow();
+                TransactionCreatorGUI transactionCreatorGUI =
+                                new TransactionCreatorGUI(LoanAppGUI.getFrame(), myAccount);
+                transactionCreatorGUI.createAddTransactionWindow();
             }
         });
     }
@@ -95,8 +95,8 @@ public class ButtonActionHandler extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playSound("./sounds/bloop.wav");
-                ContactCreator newContactCreator = new ContactCreator(LoanAppGUI.getFrame(), myAccount);
-                newContactCreator.createNewContactWindow();
+                ContactCreatorGUI newContactCreatorGUI = new ContactCreatorGUI(LoanAppGUI.getFrame(), myAccount);
+                newContactCreatorGUI.createNewContactWindow();
             }
         });
     }
@@ -120,20 +120,6 @@ public class ButtonActionHandler extends JFrame {
                 }
             }
         });
-    }
-
-    // EFFECTS: prints only contacts' names for easy selection when adding a loan or a payment
-    public String viewContactNames() {
-        String contactNames = "";
-        if (myAccount.getContactList().countNumContacts() == 0) {
-            return "No contacts to show.";
-        } else {
-            for (int i = 0; i < myAccount.getContactList().countNumContacts(); i++) {
-                Contact contact = myAccount.getContactList().getContactFromIndex(i);
-                contactNames = contactNames.concat("\n" + contact.getName());
-            }
-            return contactNames;
-        }
     }
 
     // EFFECTS: plays a sound on button press

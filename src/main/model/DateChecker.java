@@ -22,7 +22,7 @@ public class DateChecker {
     }
 
     // REQUIRES: valid date format 'DD/MM/YYYY' and valid date
-    // EFFECTS: checks that the date is in the correct format and is indeed a real date
+    // EFFECTS: checks that the date is in the correct format and is indeed a real date; handles exception
     public static boolean isValidDate(String dateToValidate) {
         try {
             return checkDate(dateToValidate);
@@ -34,7 +34,7 @@ public class DateChecker {
 
 
     // REQUIRES: valid date format 'DD/MM/YYYY' and valid date
-    // EFFECTS: checks that the date is in the correct format and is indeed a real date
+    // EFFECTS: checks that the date is in the correct format and is indeed a real date; throws exceptions if invalid
     public static boolean checkDate(String dateToValidate) throws InvalidDateException, ParseException {
         String dateFormat = "dd/MM/yyyy";
 
