@@ -22,8 +22,20 @@ public class DateChecker {
     }
 
     // REQUIRES: valid date format 'DD/MM/YYYY' and valid date
-    // EFFECTS: checks that the date is in the correct format and is indeed a real date
+    // EFFECTS: checks that the date is in the correct format and is indeed a real date; handles exception
     public static boolean isValidDate(String dateToValidate) {
+        try {
+            return checkDate(dateToValidate);
+        } catch (ParseException | InvalidDateException e) {
+            System.out.println(dateToValidate + ERROR_MSG);
+            return false;
+        }
+    }
+
+
+    // REQUIRES: valid date format 'DD/MM/YYYY' and valid date
+    // EFFECTS: checks that the date is in the correct format and is indeed a real date; throws exceptions if invalid
+    public static boolean checkDate(String dateToValidate) throws InvalidDateException, ParseException {
         String dateFormat = "dd/MM/yyyy";
 
         if (dateToValidate == null) {
@@ -33,22 +45,18 @@ public class DateChecker {
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         sdf.setLenient(false);
 
-        try {
-            Date date = sdf.parse(dateToValidate); // will throw ParseException if invalid
-            Calendar latestDate = new GregorianCalendar();
-            latestDate.set(2100, Calendar.DECEMBER, 31);
+        Date date = sdf.parse(dateToValidate); // will throw ParseException if invalid
+        Calendar latestDate = new GregorianCalendar();
+        latestDate.set(2100, Calendar.DECEMBER, 31);
 
-            Calendar earliestDate = new GregorianCalendar();
-            earliestDate.set(1900, Calendar.JANUARY, 1);
+        Calendar earliestDate = new GregorianCalendar();
+        earliestDate.set(1900, Calendar.JANUARY, 1);
 
-            if (date.after(latestDate.getTime()) || date.before(earliestDate.getTime())) {
-                throw new InvalidDateException(dateToValidate, ERROR_MSG);
-            }
-            System.out.println(dateToValidate + " is a valid date.");
-        } catch (DateTimeParseException | ParseException | InvalidDateException e) {
-            System.out.println(dateToValidate + ERROR_MSG);
-            return false;
+        if (date.after(latestDate.getTime()) || date.before(earliestDate.getTime())) {
+            throw new InvalidDateException(dateToValidate, ERROR_MSG);
         }
+
+        System.out.println(dateToValidate + " is a valid date.");
         return true;
     }
 }

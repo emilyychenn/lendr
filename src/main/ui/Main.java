@@ -1,7 +1,5 @@
 package ui;
 
-import gui.LoanAppGUI;
-
 /**
  *  Main: runs the console-based program.
  */

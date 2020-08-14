@@ -14,13 +14,13 @@ import java.util.List;
  *  Creates the full transaction history window to view all the transactions conducted with various contacts.
  */
 
-public class TransactionHistoryViewer {
+public class TransactionHistoryViewerGUI {
     private static JDialog transactionHistoryDialog;
     private static JFrame mainWindow;
     private DecimalFormat df = new DecimalFormat("#0.00");
 
     // EFFECTS: constructor to initialize new window
-    public TransactionHistoryViewer(JFrame mainWindow) {
+    public TransactionHistoryViewerGUI(JFrame mainWindow) {
         this.mainWindow = mainWindow;
     }
 

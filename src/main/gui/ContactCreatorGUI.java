@@ -13,13 +13,13 @@ import java.awt.event.WindowEvent;
  *  Creates a new window that allows users to create a new contact, and adds that contact to the user's contact list.
  */
 
-public class ContactCreator {
+public class ContactCreatorGUI {
     private static JDialog contactDialog;
     private static JFrame mainWindow;
     private Account account;
 
     // EFFECTS: constructor to initialize new window
-    public ContactCreator(JFrame mainWindow, Account myAccount) {
+    public ContactCreatorGUI(JFrame mainWindow, Account myAccount) {
         this.mainWindow = mainWindow;
         this.account = myAccount;
     }
@@ -79,8 +79,9 @@ public class ContactCreator {
 
                 if (account.getContactList().containsByName(inputtedName)) {
                     JOptionPane.showMessageDialog(contactDialog, inputtedName
-                                            + " already exists as a contact. Please enter a different name.");
-                    return;
+                            + " already exists as a contact. Please enter a different name.");
+                } else if ((inputtedName != null) && (inputtedName.trim().isEmpty())) {
+                    JOptionPane.showMessageDialog(contactDialog, "Contact cannot have an empty name.");
                 } else {
                     Contact newContact = new Contact(inputtedName);
                     account.getContactList().addContactToList(newContact);

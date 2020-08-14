@@ -24,3 +24,23 @@ As a typical user, I want to be able to:
 - You can save the state of my application by clicking the ```save and quit``` button. This will also terminate the application once data is saved. To leave without saving, click the x in the top lefthand corner of the window.
 - You can reload the state of my application by clicking the ```load data``` button. Note that if you do this after having creeated contacts/transactions it will completely replace your current activity!
 - Note: you can return to the main menu at any time by simply exiting the current window that you are in.
+
+## Phase 4: Task 2
+The ```DateChecker``` class within ```model``` is an example of a robust class. Within the class, the method ``checkDate()``` throws an ```InvalidDateException``` or a ```ParseException``` depending on the circumstances under which it is called. These exceptions are both checked exceptions, where InvalidDateException is a new class that I created to represent dates that are out of bounds: i.e. before Jan 1, 1900 or after Dec 31, 2100.
+
+In the test class, I have thus tested for the following scenarios:
+- no exceptions are expected, the date is a valid date and the method should return true
+- InvalidDateException expected because the date is out of bounds; the method should return false
+- ParseException expected because the date looks like it could be a date but does not exist (e.g. february 30th)
+- ParseException expected because the date is not formatted correctly 
+- ParseException expected because the date is null or is a string that is not a date
+
+This class is also used in other classes to make them robust as well.
+
+## Phase 4: Task 3
+Some areas that needed improvement in the code were:
+- method-level cohesion can be improved in the method ```createWindow()``` in ```LoanAppGUI```: the logo being added at the top of the window can be extracted to a separate method so that this method is really only taking care of one thing, which is to create the window and each of the buttons within it instead of also having to deal with creating and formatting the logo within it as well.
+- also within the ```LoanAppGUI``` class, each of the buttons and the logo are manually set to a place (using x and y) in the window, however, this presents high coupling because if the logo or any of the buttons' positions are changed, each of the other buttons' positions would need to be manually changed as well in order to maintain even spacing between the buttons and logo. This would not show up as an error anywhere, but instead would become apparent when viewing the gui and could be a pain to manually change later on down the road.
+- the ```LoanApp``` class also demonstrates poor cohesion: it is a very long class that can be broked down into several smaller classes so that each class follows the Single Responsibility Principle. 
+
+These were each addressed and resolved in the commit with commit message 'Phase 4: Task 3 Cohesion and Coupling changes'.

@@ -84,6 +84,4 @@ public class TransactionHistory {
             return printedTransactions;
         }
     }
-
-    // method to implement later: get transactions by date range??
 }

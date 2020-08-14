@@ -20,14 +20,14 @@ import java.util.List;
  *  a date, and adds that transaction to the user's transaction history.
  */
 
-public class TransactionCreator {
+public class TransactionCreatorGUI {
     private static JDialog transactionDialog;
     private static JFrame mainWindow;
     private Account account;
     private DecimalFormat df = new DecimalFormat("#0.00");
 
     // EFFECTS: constructor to initialize new window
-    public TransactionCreator(JFrame mainWindow, Account myAccount) {
+    public TransactionCreatorGUI(JFrame mainWindow, Account myAccount) {
         this.mainWindow = mainWindow;
         this.account = myAccount;
     }

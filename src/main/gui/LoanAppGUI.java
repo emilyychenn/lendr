@@ -10,6 +10,9 @@ import javax.swing.*;
 public class LoanAppGUI extends JFrame {
     protected static final int WINDOW_WIDTH = 400;
     protected static final int WINDOW_HEIGHT = 620;
+    protected static final int BUTTON_X_POS = 100;
+    protected static final int BUTTON1_Y_POS = 165;
+    protected static final int DISTANCE_BETWEEN_BUTTONS = 70;
     private static JFrame frame;
     private static JButton loadDataButton;
     private static JButton newContactButton;
@@ -27,16 +30,7 @@ public class LoanAppGUI extends JFrame {
         Color backgroundGreen = new Color(0, 168, 107);
         frame.getContentPane().setBackground(backgroundGreen);
 
-        // add logo at the top
-        ImageIcon logo = new ImageIcon("./images/logo.png");
-        Image logoImg = logo.getImage();
-        Image resizedLogo = logoImg.getScaledInstance(206, 139, java.awt.Image.SCALE_SMOOTH);
-        logo = new ImageIcon(resizedLogo);
-        JLabel picLabel = new JLabel(logo);
-        picLabel.setBounds(100,0,206,139);
-        picLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        frame.add(picLabel);
-
+        createLogo();
         createLoadDataButton();
         createNewContactButton();
         createAddTransactionButton();
@@ -51,6 +45,18 @@ public class LoanAppGUI extends JFrame {
         frame.setVisible(true);
     }
 
+    // EFFECTS: processes and adds logo image to the top of the window
+    private static void createLogo() {
+        ImageIcon logo = new ImageIcon("./images/logo.png");
+        Image logoImg = logo.getImage();
+        Image resizedLogo = logoImg.getScaledInstance(206, 139, Image.SCALE_SMOOTH);
+        logo = new ImageIcon(resizedLogo);
+        JLabel picLabel = new JLabel(logo);
+        picLabel.setBounds(BUTTON_X_POS, 0,206,139);
+        picLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        frame.add(picLabel);
+    }
+
     // EFFECTS: creates load data button
     public static void createLoadDataButton() {
         ImageIcon loadDataImg = new ImageIcon("./images/loadDataButton.png");
@@ -58,7 +64,7 @@ public class LoanAppGUI extends JFrame {
         Image resizedLoadData = img0.getScaledInstance(206, 42, Image.SCALE_SMOOTH);
         loadDataImg = new ImageIcon(resizedLoadData);
         loadDataButton = new JButton(loadDataImg);
-        loadDataButton.setBounds(100,165, 206, 42);
+        loadDataButton.setBounds(BUTTON_X_POS, BUTTON1_Y_POS, 206, 42);
         loadDataButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         frame.add(loadDataButton);
     }
@@ -70,7 +76,7 @@ public class LoanAppGUI extends JFrame {
         Image resizedNewContact = img.getScaledInstance(206, 42, Image.SCALE_SMOOTH);
         newContactImg = new ImageIcon(resizedNewContact);
         newContactButton = new JButton(newContactImg);
-        newContactButton.setBounds(100,235, 206, 42);
+        newContactButton.setBounds(BUTTON_X_POS,BUTTON1_Y_POS + DISTANCE_BETWEEN_BUTTONS, 206, 42);
         newContactButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         frame.add(newContactButton);
     }
@@ -82,7 +88,7 @@ public class LoanAppGUI extends JFrame {
         Image resizedAddTransaction = img2.getScaledInstance(206, 42, Image.SCALE_SMOOTH);
         addTransactionImg = new ImageIcon(resizedAddTransaction);
         addTransactionButton = new JButton(addTransactionImg);
-        addTransactionButton.setBounds(100,305, 206, 42);
+        addTransactionButton.setBounds(BUTTON_X_POS,BUTTON1_Y_POS + (2 * DISTANCE_BETWEEN_BUTTONS), 206, 42);
         addTransactionButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         frame.add(addTransactionButton);
     }
@@ -94,7 +100,7 @@ public class LoanAppGUI extends JFrame {
         Image resizedViewTransactions = img3.getScaledInstance(206, 42, Image.SCALE_SMOOTH);
         viewTransactionsImg = new ImageIcon(resizedViewTransactions);
         viewTransactionsButton = new JButton(viewTransactionsImg);
-        viewTransactionsButton.setBounds(100,375, 206, 42);
+        viewTransactionsButton.setBounds(BUTTON_X_POS,BUTTON1_Y_POS + (3 * DISTANCE_BETWEEN_BUTTONS), 206, 42);
         viewTransactionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         frame.add(viewTransactionsButton);
     }
@@ -106,7 +112,7 @@ public class LoanAppGUI extends JFrame {
         Image resizedViewContacts = img4.getScaledInstance(206, 42, Image.SCALE_SMOOTH);
         viewContactsImg = new ImageIcon(resizedViewContacts);
         viewContactsButton = new JButton(viewContactsImg);
-        viewContactsButton.setBounds(100,445, 206, 42);
+        viewContactsButton.setBounds(BUTTON_X_POS,BUTTON1_Y_POS + (4 * DISTANCE_BETWEEN_BUTTONS), 206, 42);
         viewContactsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         frame.add(viewContactsButton);
     }
@@ -118,7 +124,7 @@ public class LoanAppGUI extends JFrame {
         Image resizedSaveQuit = img5.getScaledInstance(206, 42, Image.SCALE_SMOOTH);
         saveQuitImg = new ImageIcon(resizedSaveQuit);
         saveQuitButton = new JButton(saveQuitImg);
-        saveQuitButton.setBounds(100,515, 206, 42);
+        saveQuitButton.setBounds(BUTTON_X_POS,BUTTON1_Y_POS + (5 * DISTANCE_BETWEEN_BUTTONS), 206, 42);
         saveQuitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         frame.add(saveQuitButton);
     }
