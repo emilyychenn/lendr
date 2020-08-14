@@ -64,7 +64,6 @@ public class ContactsViewer {
     // EFFECTS: prompts user when given contact name does not belong to an existing contact (when adding a loan)
     public void foundNoContact(String contactName, LoanApp app) {
         TransactionHistoryViewer thv = app.getThv();
-        TransactionCreator transactionCreator = app.getTransactionCreator();
         System.out.println(contactName + " doesn't exist in your contact list. Press 'r' to return to "
                 + "main menu or any other key to select an existing contact.");
         if (!(input.nextLine().trim().equals("r"))) {

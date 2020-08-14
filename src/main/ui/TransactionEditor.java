@@ -22,7 +22,6 @@ public class TransactionEditor {
     // EFFECTS: modifies transaction details (i.e. amount, contact, date): // select a contact, view all transactions,
     //          and select a transaction to edit based on transaction ID
     public void editTransactionDetails(LoanApp app) {
-        TransactionCreator transactionCreator = app.getTransactionCreator();
         ContactsViewer contactsViewer = app.getContactsViewer();
         TransactionHistory th = new TransactionHistory();
         TransactionHistoryViewer thv = app.getThv();
