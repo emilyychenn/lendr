@@ -30,12 +30,12 @@ public class ContactCreatorGUI {
         if (contactDialog == null || !contactDialog.isVisible()) {
             contactDialog = new JDialog(mainWindow, "New Contact", Dialog.ModalityType.DOCUMENT_MODAL);
             contactDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            contactDialog.setSize(500, 500);
+            contactDialog.setSize(400, 200);
             contactDialog.setLocationRelativeTo(null);
             contactDialog.setLayout(null);
 
             JLabel promptForName = new JLabel("Enter contact's name:");
-            promptForName.setBounds(100,50, 300,30);
+            promptForName.setBounds(50,30, 300,30);
             promptForName.setVerticalAlignment(SwingConstants.TOP);
 
             Container pane = contactDialog.getContentPane();
@@ -60,7 +60,7 @@ public class ContactCreatorGUI {
     // EFFECTS: creates a JTextField for user to input a new contact's name
     private JTextField createjTextField() {
         JTextField contactNameTextField = new JTextField();
-        contactNameTextField.setLocation(95, 100);
+        contactNameTextField.setLocation(45, 60);
         contactNameTextField.setSize(320, 30);
         contactNameTextField.setVisible(true);
         return contactNameTextField;
@@ -69,7 +69,7 @@ public class ContactCreatorGUI {
     // REQUIRES: contact name cannot be the same as an exiting contact name
     // EFFECTS: creates a new contact using the name inputted in the JText Field
     private void setContactNameText(JButton okButton, JTextField contactNameTextField) {
-        okButton.setBounds(100,150,50,20);
+        okButton.setBounds(50,120,50,20);
         okButton.setVisible(true);
 
         okButton.addActionListener(new ActionListener() {
