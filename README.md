@@ -39,7 +39,7 @@ In the test class, I have thus tested for the following scenarios:
 This class is also used in other classes to make them robust as well.
 
 ## Phase 4: Task 3
-Some areas that needed improvement in the code were:
+Some areas that could be improved in the future in the code were:
 - method-level cohesion can be improved in the method ```createWindow()``` in ```LoanAppGUI```: the logo being added at the top of the window can be extracted to a separate method so that this method is really only taking care of one thing, which is to create the window and each of the buttons within it instead of also having to deal with creating and formatting the logo within it as well.
 - also within the ```LoanAppGUI``` class, each of the buttons and the logo are manually set to a place (using x and y) in the window, however, this presents high coupling because if the logo or any of the buttons' positions are changed, each of the other buttons' positions would need to be manually changed as well in order to maintain even spacing between the buttons and logo. This would not show up as an error anywhere, but instead would become apparent when viewing the gui and could be a pain to manually change later on down the road.
 - the ```LoanApp``` class also demonstrates poor cohesion: it is a very long class that can be broked down into several smaller classes so that each class follows the Single Responsibility Principle. 
