@@ -1,5 +1,5 @@
 # Money Loaning Tracker 💵
-View a video walkthrough of the project [here](https://youtu.be/aqcrxWnILhY). Personal project for CPSC 210
+View a video walkthrough of the project [here](https://youtu.be/aqcrxWnILhY). Personal project for CPSC 210.
 
 ## Description (Proposal)
 Ever had difficulty keeping track of how much money you owe your friends or how much they owe you? In my daily life, I frequently find myself borrowing or lending money to/from friends whenever one of us forgets to bring our wallet or doesn't have enough change. We have even tried keeping track of every time one person buys the other a coffee, but this happens quite frequently and is difficult to keep track of. Currently, we are using a generic notes application to keep track of these exchanges, however, this is inefficient and doesn't show when and what the money was for — hence the idea for a **Money Loaning Tracker**. 
