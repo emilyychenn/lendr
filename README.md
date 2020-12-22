@@ -1,4 +1,4 @@
-# My Personal Project - Money Loaning Tracker 💵
+# Money Loaning Tracker 💵
 View a video walkthrough of the project [here](https://youtu.be/aqcrxWnILhY).
 
 ## Description (Proposal)
